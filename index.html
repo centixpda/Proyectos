@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Asistencia · Centix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --blue:#1B5EA8;--blue-dk:#0D2347;--blue-lt:#E8F0FB;--orange:#F07030;
+  --green:#16A34A;--red:#DC2626;--amber:#D97706;--violet:#7C3AED;--cyan:#0284C7;--pink:#DB2777;
+  --g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g400:#94A3B8;--g600:#475569;--g800:#1E293B;
+  --sh:0 4px 16px rgba(0,0,0,.10);--sh-sm:0 1px 3px rgba(0,0,0,.08);--sh-lg:0 10px 40px rgba(0,0,0,.18);
+  --r:14px;--r-sm:9px;--font:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--g100);color:var(--g800);min-height:100vh;-webkit-font-smoothing:antialiased}
+input,select,textarea,button{font-family:var(--font)}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071829 0%,#0D2347 40%,#1B5EA8 100%);padding:24px;position:relative;overflow:hidden}
+.login-page::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(240,112,48,.15) 0%,transparent 65%);top:-200px;right:-150px;pointer-events:none}
+.login-net{position:absolute;inset:0;opacity:.07;pointer-events:none}
+.login-card{background:#fff;border-radius:24px;padding:40px 34px;width:100%;max-width:400px;box-shadow:0 24px 80px rgba(0,0,0,.35);position:relative;z-index:1}
+.llogo{text-align:center;margin-bottom:26px}
+.llogo img{height:42px;object-fit:contain;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto}
+.llogo-text{font-size:26px;font-weight:800;color:var(--blue);letter-spacing:-1px}
+.llogo-text b{color:var(--orange)}
+.llogo-sub{font-size:11.5px;color:var(--g400);font-weight:600;background:var(--g100);padding:4px 12px;border-radius:100px;display:inline-block;margin-top:8px;letter-spacing:.5px}
+.login-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--g400);margin-bottom:20px}
+.form-grp{margin-bottom:14px}
+.form-lbl{font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:5px;letter-spacing:.3px}
+.form-inp{width:100%;border:1.5px solid var(--g200);border-radius:10px;padding:11px 13px;font-size:15px;color:var(--g800);outline:none;transition:border .2s}
+.form-inp:focus{border-color:var(--blue)}
+.login-err{font-size:13px;color:var(--red);font-weight:500;display:none;padding:9px 13px;background:#FEF2F2;border-radius:9px;margin-bottom:14px}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),var(--orange));border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-login:hover{opacity:.9}
+.login-hint{text-align:center;font-size:12px;color:var(--g400);margin-top:12px}
+
+/* NAV */
+.nav{background:var(--blue-dk);padding:0 18px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.35)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{height:30px;object-fit:contain}
+.nav-logo-text{font-size:19px;font-weight:800;letter-spacing:-1px;color:#fff}
+.nav-logo-text b{color:var(--orange)}
+.nav-sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
+.nav-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase}
+.nav-tabs{display:flex;gap:2px;background:rgba(255,255,255,.08);padding:3px;border-radius:9px}
+.ntab{padding:5px 13px;border:none;border-radius:6px;font-size:12.5px;font-weight:600;cursor:pointer;color:rgba(255,255,255,.6);background:transparent;transition:all .2s}
+.ntab.active{background:#fff;color:var(--blue-dk)}
+.nav-right{display:flex;align-items:center;gap:9px}
+.nav-uname{font-size:13px;font-weight:600;color:#fff}
+.rol-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px}
+.rb-asesor{background:rgba(22,163,74,.25);color:#4ade80}
+.rb-supervisor{background:rgba(240,112,48,.25);color:#fdba74}
+.rb-admin{background:rgba(220,38,38,.25);color:#fca5a5}
+.btn-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-logout:hover{background:rgba(255,255,255,.2)}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#071829 0%,#0D2347 35%,#1B5EA8 75%,#1a4d8f 100%);padding:28px 20px 34px;text-align:center}
+.hero-glow{position:absolute;width:450px;height:450px;background:radial-gradient(circle,rgba(240,112,48,.2) 0%,transparent 65%);top:-150px;right:-70px;pointer-events:none}
+.hero-net{position:absolute;inset:0;opacity:.07;pointer-events:none}
+.hero-content{position:relative;z-index:1}
+.hero-welcome{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:3px}
+.hero-name{font-size:clamp(18px,3.5vw,26px);font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:6px}
+.hero-name em{color:var(--orange);font-style:normal}
+.hero-clock{font-size:clamp(34px,7vw,52px);font-weight:300;color:#fff;letter-spacing:-2px;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.hero-date{font-size:13px;color:rgba(255,255,255,.6);text-transform:capitalize}
+
+/* LAYOUT */
+.wrap{max-width:1400px;margin:0 auto;padding:0 28px 60px}
+.sec{margin-top:22px}
+.sec-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sec-title{font-size:16px;font-weight:700;white-space:nowrap}
+.sec-line{flex:1;height:2px;background:var(--g200);border-radius:2px;overflow:hidden;position:relative}
+.sec-line::before{content:'';position:absolute;left:0;top:0;height:100%;width:48px;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--orange))}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:9px}
+.stat-card{background:#fff;border-radius:var(--r-sm);padding:13px;box-shadow:var(--sh-sm);text-align:center}
+.stat-n{font-size:26px;font-weight:800;color:var(--blue);line-height:1}
+.stat-l{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.sc-green .stat-n{color:var(--green)}.sc-red .stat-n{color:var(--red)}.sc-amber .stat-n{color:var(--amber)}.sc-gray .stat-n{color:var(--g400)}
+
+/* EVENT BUTTONS */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.ev-btn{background:#fff;border:2px solid transparent;border-radius:var(--r);padding:14px 10px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:var(--sh-sm);transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.ev-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ec,var(--blue))}
+.ev-btn:hover{transform:translateY(-3px);box-shadow:var(--sh);border-color:var(--ec,var(--blue))}
+.ev-btn:active{transform:scale(.97)}
+.ev-icon{width:40px;height:40px;border-radius:11px;font-size:19px;display:flex;align-items:center;justify-content:center}
+.ev-label{font-size:11.5px;font-weight:600;color:var(--g800);text-align:center;line-height:1.3}
+
+/* FEED */
+.feed{display:flex;flex-direction:column;gap:7px}
+.feed-item{background:#fff;border-radius:var(--r-sm);padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh-sm);animation:fIn .3s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.fd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.fa{font-weight:600;font-size:13px;min-width:80px}
+.fe{flex:1;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:100px;display:inline-flex;align-items:center;gap:4px}
+.fobs{font-size:11px;color:var(--g400);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fh{font-size:11.5px;color:var(--g400);font-variant-numeric:tabular-nums;white-space:nowrap}
+.feed-empty{text-align:center;padding:26px;color:var(--g400);font-size:13px;background:#fff;border-radius:var(--r);box-shadow:var(--sh-sm)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r-sm);box-shadow:var(--sh-sm)}
+.tbl{width:100%;border-collapse:collapse;background:#fff;font-size:13px}
+.tbl th{background:var(--blue-dk);color:rgba(255,255,255,.8);padding:10px 12px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--g100);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:nth-child(even) td{background:var(--g50)}
+.tbl tr:hover td{background:var(--blue-lt)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:700}
+
+/* FILTERS */
+.fbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
+.fsel,.finp{padding:8px 10px;border:1.5px solid var(--g200);border-radius:9px;font-size:13px;color:var(--g800);background:#fff;outline:none}
+.flbl{font-size:10.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px}
+.btn-pri{padding:9px 16px;background:linear-gradient(135deg,var(--blue),var(--orange));border:none;border-radius:9px;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+.btn-sec{padding:9px 14px;background:#fff;border:1.5px solid var(--g200);border-radius:9px;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer}
+.ml{margin-left:auto}
+
+/* SUB TABS */
+.stabs{display:flex;gap:0;background:var(--g100);padding:3px;border-radius:9px;margin-bottom:14px;width:fit-content}
+.stab{padding:6px 16px;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--g400);background:transparent;transition:all .2s}
+.stab.active{background:#fff;color:var(--g800);box-shadow:var(--sh-sm)}
+
+/* USER LIST */
+.user-item{background:#fff;border-radius:var(--r-sm);padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh-sm);margin-bottom:7px}
+.uav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--orange));color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.uname{font-size:14px;font-weight:600}
+.umeta{font-size:12px;color:var(--g400);margin-top:2px}
+.ubtn{background:var(--g100);border:none;border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.ubtn:hover{background:var(--g200)}
+
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(13,35,71,.6);backdrop-filter:blur(5px);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:600px){.ov{align-items:center}}
+.mc{background:#fff;width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:22px 20px 30px}
+@media(min-width:600px){.mc{border-radius:20px;max-width:430px}}
+.mc-title{font-size:17px;font-weight:700;margin-bottom:14px}
+.mc-grp{margin-bottom:13px}
+.mc-lbl{font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px}
+.mc-inp{width:100%;border:1.5px solid var(--g200);border-radius:10px;padding:10px 13px;font-size:14px;outline:none;transition:border .2s}
+.mc-inp:focus{border-color:var(--blue)}
+.mc-acts{display:flex;gap:9px;margin-top:14px}
+.btn-can{flex:1;padding:12px;border:1.5px solid var(--g200);border-radius:10px;background:#fff;font-size:14px;font-weight:600;color:var(--g600);cursor:pointer}
+.btn-ok{flex:2;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--orange));color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--g800);color:#fff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:var(--sh-lg);z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);max-width:310px;text-align:center;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#15803D}.toast.err{background:#B91C1C}
+
+@media(max-width:480px){.nav-tabs,.nav-uname{display:none}.ev-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- LOGIN -->
+<div id="pgLogin">
+<div class="login-page">
+  <svg class="login-net" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="white" stroke-width="1" fill="none">
+      <polyline points="0,400 200,250 450,500 700,200 950,450 1200,300"/>
+      <line x1="200" y1="250" x2="350" y2="80"/><line x1="700" y1="200" x2="800" y2="50"/>
+      <line x1="450" y1="500" x2="500" y2="700"/><line x1="950" y1="450" x2="1050" y2="600"/>
+      <circle cx="200" cy="250" r="4" fill="white"/><circle cx="450" cy="500" r="3" fill="white"/>
+      <circle cx="700" cy="200" r="5" fill="#F07030"/><circle cx="950" cy="450" r="4" fill="white"/>
+    </g>
+  </svg>
+  <div class="login-card">
+    <div class="llogo">
+      <img src="./LOGO.png" alt="Centix" id="lLogo" onerror="this.style.display='none';document.getElementById('lLogoTxt').style.display='block'">
+      <div class="llogo-text" id="lLogoTxt" style="display:none">centi<b>x</b></div>
+      <div class="llogo-sub">Sistema de Asistencia</div>
+    </div>
+    <div class="login-title">Bienvenido</div>
+    <div class="login-sub">Ingresa con tu DNI para continuar</div>
+    <div class="login-err" id="loginErr"></div>
+    <div class="form-grp">
+      <label class="form-lbl">DNI</label>
+      <input class="form-inp" id="inpDni" type="text" placeholder="Tu número de DNI" maxlength="12" inputmode="numeric"/>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Contraseña</label>
+      <input class="form-inp" id="inpPass" type="password" placeholder="••••••••"/>
+    </div>
+    <button class="btn-login" id="btnLogin">Ingresar →</button>
+    <div class="login-hint">Primera vez: tu contraseña es tu mismo DNI</div>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="pgApp" style="display:none">
+  <nav class="nav">
+    <div class="nav-brand">
+      <img src="./LOGO.png" alt="Centix" class="nav-logo" id="nLogo" onerror="this.style.display='none';document.getElementById('nLogoTxt').style.display='block'">
+      <div class="nav-logo-text" id="nLogoTxt" style="display:none">centi<b>x</b></div>
+      <div class="nav-sep"></div>
+      <span class="nav-lbl">Asistencia</span>
+    </div>
+    <div class="nav-tabs" id="navTabs" style="display:none">
+      <button class="ntab active" data-tab="hoy">Hoy</button>
+      <button class="ntab" data-tab="mis">Mis Eventos</button>
+      <button class="ntab" data-tab="rep">Reportes</button>
+      <button class="ntab" data-tab="users" id="ntabUsers" style="display:none">Usuarios</button>
+    </div>
+    <div class="nav-right">
+      <span class="nav-uname" id="navNombre"></span>
+      <span class="rol-badge" id="navRol"></span>
+      <button class="btn-logout" id="btnLogout">Salir</button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <svg class="hero-net" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="white" stroke-width="1" fill="none">
+        <polyline points="0,100 150,55 320,140 500,45 680,150 860,65 1040,160 1200,85"/>
+        <circle cx="500" cy="45" r="4" fill="#F07030"/><circle cx="860" cy="65" r="4" fill="#F07030"/>
+      </g>
+    </svg>
+    <div class="hero-content">
+      <div class="hero-welcome" id="hWelcome"></div>
+      <div class="hero-name" id="hName"></div>
+      <div class="hero-clock" id="hClock">--:--:--</div>
+      <div class="hero-date" id="hDate"></div>
+    </div>
+  </header>
+
+  <!-- ASESOR -->
+  <div id="vAsesor" style="display:none">
+    <div class="wrap">
+      <div class="sec">
+        <div class="sec-hdr"><span class="sec-title">Registrar evento</span><div class="sec-line"></div></div>
+        <div class="ev-grid" id="evGrid"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-hdr"><span class="sec-title">Mis eventos hoy</span><div class="sec-line"></div></div>
+        <div class="feed" id="myFeed"><div class="feed-empty">Sin eventos registrados hoy.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPERVISOR / ADMIN -->
+  <div id="vSup" style="display:none">
+    <div class="wrap">
+
+      <!-- TAB HOY -->
+      <div id="tHoy">
+        <div class="sec">
+          <div class="sec-hdr"><span class="sec-title">Resumen del día</span><div class="sec-line"></div></div>
+          <div id="supSelWrap" style="display:none;margin-bottom:12px">
+            <select class="fsel" id="supSel" style="min-width:220px"><option value="">Todos los supervisores</option></select>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-n" id="stTotal">—</div><div class="stat-l">Equipo</div></div>
+            <div class="stat-card sc-green"><div class="stat-n" id="stPres">—</div><div class="stat-l">Presentes</div></div>
+            <div class="stat-card sc-amber"><div class="stat-n" id="stTard">—</div><div class="stat-l">Tardanzas</div></div>
+            <div class="stat-card sc-red"><div class="stat-n" id="stAus">—</div><div class="stat-l">Ausentes</div></div>
+            <div class="stat-card"><div class="stat-n" id="stPerm">—</div><div class="stat-l">Permisos</div></div>
+            <div class="stat-card sc-gray"><div class="stat-n" id="stSinM">—</div><div class="stat-l">Sin marcar</div></div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-hdr"><span class="sec-title">Estado del equipo</span><div class="sec-line"></div></div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>DNI</th><th>Nombre</th><th>Entrada</th><th>Salida</th><th>Eventos del día</th><th>Estado</th></tr></thead>
+              <tbody id="teamTbl"><tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB MIS EVENTOS (supervisor/admin) -->
+      <div id="tMis" style="display:none">
+        <div class="sec">
+          <div class="sec-hdr"><span class="sec-title">Registrar mi evento</span><div class="sec-line"></div></div>
+          <div class="ev-grid" id="evGridSup"></div>
+        </div>
+        <div class="sec">
+          <div class="sec-hdr"><span class="sec-title">Mis eventos hoy</span><div class="sec-line"></div></div>
+          <div class="feed" id="myFeedSup"><div class="feed-empty">Sin eventos registrados hoy.</div></div>
+        </div>
+      </div>
+
+      <!-- TAB REPORTES -->
+      <div id="tRep" style="display:none">
+        <div class="sec">
+          <div class="sec-hdr"><span class="sec-title">Reportes</span><div class="sec-line"></div></div>
+          <div class="fbar">
+            <div><label class="flbl">Desde</label><input class="finp" type="date" id="rDesde"/></div>
+            <div><label class="flbl">Hasta</label><input class="finp" type="date" id="rHasta"/></div>
+            <div id="rSupWrap" style="display:none"><label class="flbl">Supervisor</label><select class="fsel" id="rSupSel"><option value="">Todos</option></select></div>
+            <div style="align-self:flex-end"><button class="btn-pri" id="btnGenRep">Generar →</button></div>
+            <div style="align-self:flex-end" class="ml"><button class="btn-sec" id="btnExpRep">↓ CSV</button></div>
+          </div>
+          <div class="stabs">
+            <button class="stab active" data-rt="asist">Asistencia</button>
+            <button class="stab" data-rt="ausent">Ausentismo</button>
+          </div>
+          <div id="repAsist">
+            <div class="tbl-wrap">
+              <table class="tbl"><thead><tr><th>Nombre</th><th>DNI</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Otros eventos</th></tr></thead>
+              <tbody id="tAsist"><tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">Selecciona fechas y genera el reporte</td></tr></tbody></table>
+            </div>
+          </div>
+          <div id="repAusent" style="display:none">
+            <div class="tbl-wrap">
+              <table class="tbl"><thead><tr><th>Nombre</th><th>DNI</th><th>Faltas</th><th>Tardanzas</th><th>Perm. C/G</th><th>Perm. S/G</th><th>Desc. Méd.</th><th>Sal. Ant.</th><th>TOTAL</th></tr></thead>
+              <tbody id="tAusent"><tr><td colspan="9" style="text-align:center;color:var(--g400);padding:22px">Selecciona fechas y genera el reporte</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB USUARIOS (admin) -->
+      <div id="tUsers" style="display:none">
+        <div class="sec">
+          <div class="sec-hdr">
+            <span class="sec-title">Gestión de Usuarios</span>
+            <div class="sec-line"></div>
+            <button class="btn-pri" id="btnAddUser">+ Nuevo</button>
+          </div>
+          <div class="fbar" style="margin-bottom:12px">
+            <input class="finp" id="uSearch" placeholder="Buscar nombre o DNI…" style="flex:1;min-width:160px"/>
+            <select class="fsel" id="uRolF">
+              <option value="">Todos los roles</option>
+              <option value="asesor">Asesores</option>
+              <option value="supervisor">Supervisores</option>
+              <option value="admin">Administradores</option>
+            </select>
+          </div>
+          <div id="userList"><div class="feed-empty">Cargando usuarios…</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /pgApp -->
+
+<!-- Modal: Observación -->
+<div id="mObs" class="ov" style="display:none">
+  <div class="mc">
+    <div class="mc-title" id="mObsTitle">Registrar evento</div>
+    <div id="mObsBadge" style="display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:100px;font-size:13px;font-weight:600;margin-bottom:14px"></div>
+    <div class="mc-grp"><label class="mc-lbl">Observación (opcional)</label>
+      <textarea class="mc-inp" id="mObsTa" rows="3" placeholder="Ej: 15 minutos tarde / Permiso por cita médica…"></textarea>
+    </div>
+    <div class="mc-acts">
+      <button class="btn-can" id="mObsCan">Cancelar</button>
+      <button class="btn-ok"  id="mObsOk">Registrar ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Usuario -->
+<div id="mUser" class="ov" style="display:none">
+  <div class="mc">
+    <div class="mc-title" id="mUserTitle">Nuevo Usuario</div>
+    <div class="mc-grp"><label class="mc-lbl">DNI *</label><input class="mc-inp" id="uDni" type="text" placeholder="Ej: 12345678" maxlength="12"/></div>
+    <div class="mc-grp"><label class="mc-lbl">Nombre completo *</label><input class="mc-inp" id="uNombre" type="text" placeholder="Ej: Juan Carlos Pérez López"/></div>
+    <div class="mc-grp"><label class="mc-lbl">Rol *</label>
+      <select class="mc-inp" id="uRol">
+        <option value="asesor">Asesor</option>
+        <option value="supervisor">Supervisor</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </div>
+    <div class="mc-grp" id="uSupGrp"><label class="mc-lbl">Supervisor asignado</label>
+      <select class="mc-inp" id="uSupSel"><option value="">Sin supervisor</option></select>
+    </div>
+    <div class="mc-grp"><label class="mc-lbl">Contraseña <span style="color:var(--g400);font-weight:400">(vacío = DNI del usuario)</span></label>
+      <input class="mc-inp" id="uPass" type="text" placeholder="Dejar vacío para usar DNI como contraseña"/>
+    </div>
+    <div class="mc-acts">
+      <button class="btn-can" id="mUserCan">Cancelar</button>
+      <button class="btn-ok"  id="mUserOk">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span id="tIco"></span><span id="tMsg"></span></div>
+
+<script>
+/* ══ CONFIG — edita con tus credenciales Firebase ════ */
+const FB_CFG = {
+  apiKey:            "AIzaSyD7G488hUP4Qw7FHSVZRTMXvwGX8P_nAwU",
+  authDomain:        "centix-asistencia.firebaseapp.com",
+  projectId:         "centix-asistencia",
+  storageBucket:     "centix-asistencia.firebasestorage.app",
+  messagingSenderId: "421810748910",
+  appId:             "1:421810748910:web:b36da00769495e3cd322ff"
+};
+
+/* ══ EVENTOS ══════════════════════════════════════════ */
+const EVS=[
+  {id:"entrada",     label:"Entrada",            icon:"🟢",color:"#16A34A",obs:false},
+  {id:"salida",      label:"Salida",              icon:"🔴",color:"#6B7280",obs:false},
+  {id:"refrig_sal",  label:"Refrigerio\nSalida",  icon:"🍽️", color:"#D97706",obs:false},
+  {id:"refrig_ret",  label:"Refrigerio\nRetorno", icon:"↩️", color:"#D97706",obs:false},
+  {id:"perm_con",    label:"Permiso\nCon Goce",   icon:"📋",color:"#2563EB",obs:true},
+  {id:"perm_sin",    label:"Permiso\nSin Goce",   icon:"📄",color:"#7C3AED",obs:true},
+  {id:"perm_ret",    label:"Retorno\nPermiso",    icon:"🔄",color:"#0891B2",obs:false},
+  {id:"sal_anticip", label:"Salida\nAnticipada",  icon:"⏩",color:"#DB2777",obs:true},
+  {id:"tardanza",    label:"Tardanza",             icon:"⏱️", color:"#EA580C",obs:true},
+  {id:"falta",       label:"Falta",               icon:"❌",color:"#DC2626",obs:false},
+  {id:"desc_med",    label:"Descanso\nMédico",    icon:"🏥",color:"#0284C7",obs:true},
+];
+const EVM=Object.fromEntries(EVS.map(e=>[e.id,e]));
+
+/* ══ FIREBASE ════════════════════════════════════════ */
+firebase.initializeApp(FB_CFG);
+const db=firebase.firestore();
+
+/* ══ UTILS ═══════════════════════════════════════════ */
+const DIAS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const p2=n=>String(n).padStart(2,'0');
+function hoy(){const d=new Date();return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`}
+function ini(n){const p=n.trim().split(/\s+/);return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n.slice(0,2).toUpperCase()}
+const $=id=>document.getElementById(id);
+let _tt;
+function toast(m,t='ok'){const el=$('toast');$('tMsg').textContent=m;$('tIco').textContent=t==='ok'?'✓':t==='err'?'✕':'ℹ';el.className=`toast ${t} show`;clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),3200)}
+
+/* ══ RELOJ ═══════════════════════════════════════════ */
+function tick(){const n=new Date();$('hClock').textContent=`${p2(n.getHours())}:${p2(n.getMinutes())}:${p2(n.getSeconds())}`;$('hDate').textContent=`${DIAS[n.getDay()]}, ${n.getDate()} de ${MESES[n.getMonth()]} de ${n.getFullYear()}`}
+tick();setInterval(tick,1000);
+
+/* ══ SESIÓN ══════════════════════════════════════════ */
+const SESS_KEY='cx_gap_v3';
+let CU=null;
+function getSavedDni(){try{const s=localStorage.getItem(SESS_KEY);if(s){const o=JSON.parse(s);return o.dni||null}}catch(e){}return null}
+function saveSess(u){CU=u;localStorage.setItem(SESS_KEY,JSON.stringify(u))}
+function clearSess(){CU=null;localStorage.removeItem(SESS_KEY)}
+// Eliminar sesiones viejas de versiones anteriores
+['cx_gap','cx_gap_v2'].forEach(k=>localStorage.removeItem(k));
+
+/* ══ LOGIN ═══════════════════════════════════════════ */
+async function doLogin(){
+  const dni=$('inpDni').value.trim(), pass=$('inpPass').value.trim();
+  $('loginErr').style.display='none';$('btnLogin').textContent='Verificando…';
+  try{
+    const snap=await db.collection('usuarios').doc(dni).get();
+    if(!snap.exists) throw new Error('DNI no registrado en el sistema');
+    const u=snap.data();
+    if(!u.activo) throw new Error('Usuario inactivo. Contacta al administrador');
+    if(u.password!==pass) throw new Error('Contraseña incorrecta');
+    saveSess({dni:u.dni,nombre:u.nombre,rol:u.rol,supervisor_dni:u.supervisor_dni||''});
+    initApp();
+  }catch(e){$('loginErr').textContent=e.message;$('loginErr').style.display='block'}
+  finally{$('btnLogin').textContent='Ingresar →'}
+}
+$('btnLogin').addEventListener('click',doLogin);
+$('inpPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+$('inpDni').addEventListener('keydown',e=>{if(e.key==='Enter')$('inpPass').focus()});
+
+/* ══ LOGOUT ══════════════════════════════════════════ */
+let feedUnsub=null;
+$('btnLogout').addEventListener('click',()=>{if(feedUnsub)feedUnsub();clearSess();$('pgApp').style.display='none';$('pgLogin').style.display='block'});
+
+/* ══ INIT APP ════════════════════════════════════════ */
+function initApp(){
+  $('pgLogin').style.display='none';$('pgApp').style.display='block';
+  const rlab={asesor:'Asesor',supervisor:'Supervisor',admin:'Admin'};
+  const rcls={asesor:'rb-asesor',supervisor:'rb-supervisor',admin:'rb-admin'};
+  const nom=CU.nombre||CU.dni||'Usuario';
+  $('navNombre').textContent=nom.split(' ')[0];
+  $('navRol').textContent=rlab[CU.rol]||CU.rol;
+  $('navRol').className=`rol-badge ${rcls[CU.rol]||''}`;
+  const h=new Date().getHours();
+  $('hWelcome').textContent=h<12?'Buenos días':h<18?'Buenas tardes':'Buenas noches';
+  $('hName').innerHTML=`${nom.split(' ').slice(0,2).join(' ')} <em>·</em> ${rlab[CU.rol]||CU.rol}`;
+  if(CU.rol==='asesor'){
+    $('navTabs').style.display='none';
+    $('vAsesor').style.display='block';$('vSup').style.display='none';
+    initAsesor();
+  }else{
+    $('navTabs').style.display='flex';
+    $('vAsesor').style.display='none';$('vSup').style.display='block';
+    if(CU.rol==='admin'){$('ntabUsers').style.display='block';$('supSelWrap').style.display='block';$('rSupWrap').style.display='block';loadSupsSelects()}
+    else{loadHoy();}
+    setupTabNav();
+    showTab('hoy');
+    setupRep();
+    if(CU.rol==='admin')setupUsers();
+  }
+}
+
+/* ══ TAB NAV ═════════════════════════════════════════ */
+function showTab(t){
+  const map={hoy:'tHoy',mis:'tMis',rep:'tRep',users:'tUsers'};
+  ['tHoy','tMis','tRep','tUsers'].forEach(id=>$(id).style.display='none');
+  $(map[t]||'tHoy').style.display='block';
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  if(t==='mis')initMisSup();
+}
+function setupTabNav(){document.querySelectorAll('.ntab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)))}
+
+/* ══ ASESOR VIEW ═════════════════════════════════════ */
+let pendEv=null;
+function initAsesor(){
+  $('evGrid').innerHTML=EVS.map(ev=>`<button class="ev-btn" data-ev="${ev.id}" style="--ec:${ev.color}"><div class="ev-icon" style="background:${ev.color}20">${ev.icon}</div><div class="ev-label">${ev.label.replace('\n','<br>')}</div></button>`).join('');
+  document.querySelectorAll('.ev-btn').forEach(b=>b.addEventListener('click',()=>onEv(b.dataset.ev)));
+  if(feedUnsub)feedUnsub();
+  feedUnsub=db.collection('marcaciones').where('dni','==',CU.dni).where('fecha','==',hoy())
+    .onSnapshot(snap=>{
+      const el=$('myFeed');
+      if(snap.empty){el.innerHTML='<div class="feed-empty">Sin eventos registrados hoy.</div>';return}
+      const docs=[...snap.docs].map(d=>d.data()).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+      el.innerHTML=docs.map(r=>{const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};return`<div class="feed-item"><div class="fd" style="background:${ev.color}"></div><div class="fe" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${r.evento_label}</div>${r.observacion?`<span class="fobs" title="${r.observacion}">"${r.observacion}"</span>`:''}<div class="fh">${r.hora||'--:--'}</div></div>`}).join('');
+    },e=>console.warn(e));
+}
+function onEv(id,ctx){
+  const ev=EVM[id];if(!ev)return;
+  if(ev.obs){const b=$('mObsBadge');b.style.background=ev.color+'22';b.style.color=ev.color;b.innerHTML=`${ev.icon} ${ev.label.replace('\n',' ')}`;$('mObsTitle').textContent=`Registrar: ${ev.label.replace('\n',' ')}`;$('mObsTa').value='';$('mObs').style.display='flex';pendEv=ev}
+  else guardar(ev,'');
+}
+$('mObsCan').addEventListener('click',()=>{$('mObs').style.display='none';pendEv=null});
+$('mObsOk').addEventListener('click',()=>{if(!pendEv)return;const obs=$('mObsTa').value.trim();$('mObs').style.display='none';guardar(pendEv,obs);pendEv=null});
+function guardar(ev,obs){
+  const n=new Date(),hora=`${p2(n.getHours())}:${p2(n.getMinutes())}`;
+  db.collection('marcaciones').add({dni:CU.dni,nombre:CU.nombre,rol:CU.rol,supervisor_dni:CU.supervisor_dni,evento_id:ev.id,evento_label:ev.label.replace('\n',' '),observacion:obs,fecha:hoy(),hora,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+    .then(()=>toast(`${ev.label.replace('\n',' ')} registrada`,'ok'))
+    .catch(e=>{console.error(e);toast('Error al guardar','err')});
+}
+
+/* ══ SUPERVISOR: HOY ═════════════════════════════════ */
+async function loadHoy(filtroSup=null){
+  const supDni=CU.rol==='supervisor'?CU.dni:filtroSup;
+  try{
+    let uSnap;
+    if(supDni){
+      uSnap=await db.collection('usuarios').where('supervisor_dni','==',supDni).get();
+    } else {
+      uSnap=await db.collection('usuarios').get();
+    }
+    // Mostrar todos los reportes directos (cualquier rol excepto el propio usuario)
+    const members=uSnap.docs.map(d=>d.data()).filter(u=>u.activo&&u.dni!==CU.dni&&(supDni?u.supervisor_dni===supDni:true));
+    const dnis=members.map(u=>u.dni);
+    if(!dnis.length){renderHoy([],[]);return;}
+
+    // Traer marcaciones de hoy en lotes de 30 (límite Firestore in)
+    let marcas=[];
+    for(let i=0;i<dnis.length;i+=30){
+      const mSnap=await db.collection('marcaciones').where('fecha','==',hoy()).where('dni','in',dnis.slice(i,i+30)).get();
+      mSnap.forEach(d=>marcas.push(d.data()));
+    }
+    renderHoy(members,marcas);
+  }catch(e){console.error(e);toast('Error cargando equipo','err')}
+}
+function getStatus(ms){
+  const ids=ms.map(m=>m.evento_id);
+  if(ids.includes('falta'))      return{label:'Falta',color:'#DC2626'};
+  if(ids.includes('perm_sin'))   return{label:'Perm. S/G',color:'#7C3AED'};
+  if(ids.includes('perm_con'))   return{label:'Perm. C/G',color:'#2563EB'};
+  if(ids.includes('desc_med'))   return{label:'Des. Médico',color:'#0284C7'};
+  if(ids.includes('entrada')){if(ids.includes('tardanza'))return{label:'Tardanza',color:'#EA580C'};return{label:'Presente',color:'#16A34A'}}
+  return{label:'Sin marcar',color:'#94A3B8'};
+}
+function renderHoy(members,marcas){
+  const byDni={};marcas.forEach(m=>{if(!byDni[m.dni])byDni[m.dni]=[];byDni[m.dni].push(m)});
+  let pres=0,tard=0,aus=0,perm=0,sinm=0;
+  members.forEach(u=>{const ms=byDni[u.dni]||[],st=getStatus(ms);if(st.label==='Presente')pres++;else if(st.label==='Tardanza'){pres++;tard++}else if(st.label==='Falta')aus++;else if(['Perm. S/G','Perm. C/G','Des. Médico'].includes(st.label))perm++;else sinm++});
+  $('stTotal').textContent=members.length;$('stPres').textContent=pres;$('stTard').textContent=tard;$('stAus').textContent=aus;$('stPerm').textContent=perm;$('stSinM').textContent=sinm;
+  const tb=$('teamTbl');
+  if(!members.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">No hay asesores asignados</td></tr>';return}
+  tb.innerHTML=members.sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(u=>{
+    const ms=byDni[u.dni]||[],st=getStatus(ms);
+    const ent=ms.find(m=>m.evento_id==='entrada')?.hora||'—';
+    const sal=ms.find(m=>m.evento_id==='salida')?.hora||'—';
+    const otros=ms.filter(m=>m.evento_id!=='entrada'&&m.evento_id!=='salida').map(m=>{const ev=EVM[m.evento_id]||{icon:'⦿',color:'#94A3B8'};return`<span class="badge" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${m.hora}</span>`}).join(' ')||'—';
+    return`<tr><td style="color:var(--g400)">${u.dni}</td><td style="font-weight:600">${u.nombre}</td><td style="font-variant-numeric:tabular-nums">${ent}</td><td style="font-variant-numeric:tabular-nums">${sal}</td><td>${otros}</td><td><span class="badge" style="background:${st.color}20;color:${st.color}">${st.label}</span></td></tr>`;
+  }).join('');
+}
+async function loadSupsSelects(){
+  try{
+    const snap=await db.collection('usuarios').get();
+    const todos=snap.docs.map(d=>d.data());
+    const sups=todos
+      .filter(u=>u.activo&&u.nombre&&u.dni&&(u.rol==='supervisor'||u.rol==='admin'))
+      .sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
+    const nom2=s=>(s.nombre||s.dni||'').split(' ').slice(0,2).join(' ');
+    const mkOpt=(s,sel)=>`<option value="${s.dni}"${sel?' selected':''}>${nom2(s)}</option>`;
+    $('supSel').innerHTML='<option value="">— Todos los equipos —</option>'+sups.map(s=>mkOpt(s,s.dni===CU.dni)).join('');
+    $('supSel').addEventListener('change',()=>loadHoy($('supSel').value||null));
+    $('rSupSel').innerHTML='<option value="">Todos</option>'+sups.map(s=>mkOpt(s,false)).join('');
+    loadHoy(CU.dni);
+  }catch(e){console.error('loadSupsSelects',e);toast('Error cargando supervisores','err')}
+}
+
+/* ══ MIS EVENTOS (supervisor/admin) ═════════════════ */
+let feedSupUnsub=null;
+function initMisSup(){
+  $('evGridSup').innerHTML=EVS.map(ev=>`<button class="ev-btn" data-ev="${ev.id}" style="--ec:${ev.color}"><div class="ev-icon" style="background:${ev.color}20">${ev.icon}</div><div class="ev-label">${ev.label.replace('\n','<br>')}</div></button>`).join('');
+  document.querySelectorAll('#evGridSup .ev-btn').forEach(b=>b.addEventListener('click',()=>onEv(b.dataset.ev,'sup')));
+  if(feedSupUnsub)feedSupUnsub();
+  feedSupUnsub=db.collection('marcaciones').where('dni','==',CU.dni).where('fecha','==',hoy())
+    .onSnapshot(snap=>{
+      const el=$('myFeedSup');
+      if(snap.empty){el.innerHTML='<div class="feed-empty">Sin eventos registrados hoy.</div>';return}
+      const docs=[...snap.docs].map(d=>d.data()).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+      el.innerHTML=docs.map(r=>{const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};return`<div class="feed-item"><div class="fd" style="background:${ev.color}"></div><div class="fe" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${r.evento_label}</div>${r.observacion?`<span class="fobs" title="${r.observacion}">"${r.observacion}"</span>`:''}<div class="fh">${r.hora||'--:--'}</div></div>`}).join('');
+    },e=>console.warn(e));
+}
+
+/* ══ REPORTES ════════════════════════════════════════ */
+let repData=[],repTab='asist';
+function setupRep(){
+  const d=new Date();$('rDesde').value=`${d.getFullYear()}-${p2(d.getMonth()+1)}-01`;$('rHasta').value=hoy();
+  $('btnGenRep').addEventListener('click',genRep);
+  $('btnExpRep').addEventListener('click',expRep);
+  document.querySelectorAll('.stab').forEach(b=>b.addEventListener('click',()=>{
+    repTab=b.dataset.rt;
+    document.querySelectorAll('.stab').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+    $('repAsist').style.display=repTab==='asist'?'block':'none';
+    $('repAusent').style.display=repTab==='ausent'?'block':'none';
+    renderRep();
+  }));
+}
+async function genRep(){
+  const desde=$('rDesde').value,hasta=$('rHasta').value;
+  if(!desde||!hasta){toast('Selecciona un rango de fechas','err');return}
+  $('btnGenRep').textContent='Cargando…';
+  try{
+    const supDni=CU.rol==='admin'?($('rSupSel').value||null):CU.dni;
+    let q=db.collection('marcaciones').where('fecha','>=',desde).where('fecha','<=',hasta);
+    if(supDni)q=q.where('supervisor_dni','==',supDni);
+    const snap=await q.get();
+    repData=snap.docs.map(d=>d.data());
+    renderRep();toast(`${repData.length} registros cargados`,'ok');
+  }catch(e){
+    console.error(e);
+    if(e.code==='failed-precondition')toast('Índice requerido en Firestore. Revisa la consola del navegador para crear el índice automáticamente.','err');
+    else toast('Error al cargar reporte','err');
+  }finally{$('btnGenRep').textContent='Generar →'}
+}
+function renderRep(){if(repTab==='asist')renderAsist();else renderAusent()}
+function renderAsist(){
+  const tb=$('tAsist');
+  if(!repData.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">Sin datos</td></tr>';return}
+  const g={};
+  repData.forEach(d=>{const k=`${d.dni}_${d.fecha}`;if(!g[k])g[k]={nombre:d.nombre,dni:d.dni,fecha:d.fecha,ent:'—',sal:'—',otros:[]};if(d.evento_id==='entrada')g[k].ent=d.hora;else if(d.evento_id==='salida')g[k].sal=d.hora;else g[k].otros.push(d)});
+  tb.innerHTML=Object.values(g).sort((a,b)=>a.fecha.localeCompare(b.fecha)||a.nombre.localeCompare(b.nombre)).map(r=>{
+    const otros=r.otros.map(d=>{const ev=EVM[d.evento_id]||{icon:'⦿',color:'#94A3B8'};return`<span class="badge" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${d.hora}</span>`}).join(' ')||'—';
+    return`<tr><td style="font-weight:600">${r.nombre}</td><td style="color:var(--g400)">${r.dni}</td><td>${r.fecha}</td><td style="font-variant-numeric:tabular-nums">${r.ent}</td><td style="font-variant-numeric:tabular-nums">${r.sal}</td><td>${otros}</td></tr>`;
+  }).join('');
+}
+function renderAusent(){
+  const tb=$('tAusent');
+  if(!repData.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--g400);padding:22px">Sin datos</td></tr>';return}
+  const ba={};
+  repData.forEach(d=>{if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pc:0,ps:0,dm:0,sa:0};const a=ba[d.dni];if(d.evento_id==='falta')a.f++;else if(d.evento_id==='tardanza')a.t++;else if(d.evento_id==='perm_con')a.pc++;else if(d.evento_id==='perm_sin')a.ps++;else if(d.evento_id==='desc_med')a.dm++;else if(d.evento_id==='sal_anticip')a.sa++});
+  const rows=Object.values(ba).sort((a,b)=>a.nombre.localeCompare(b.nombre));
+  const rd=v=>v>0?`<span style="color:#DC2626;font-weight:700">${v}</span>`:0;
+  tb.innerHTML=rows.map(r=>{const tot=r.f+r.t+r.pc+r.ps+r.dm+r.sa;return`<tr><td style="font-weight:600">${r.nombre}</td><td style="color:var(--g400)">${r.dni}</td><td style="text-align:center">${rd(r.f)}</td><td style="text-align:center">${rd(r.t)}</td><td style="text-align:center">${r.pc}</td><td style="text-align:center">${r.ps}</td><td style="text-align:center">${r.dm}</td><td style="text-align:center">${r.sa}</td><td style="text-align:center;font-weight:700;color:${tot>0?'#EA580C':'#16A34A'}">${tot}</td></tr>`}).join('');
+  const tot={f:0,t:0,pc:0,ps:0,dm:0,sa:0};rows.forEach(r=>{tot.f+=r.f;tot.t+=r.t;tot.pc+=r.pc;tot.ps+=r.ps;tot.dm+=r.dm;tot.sa+=r.sa});
+  const tt=tot.f+tot.t+tot.pc+tot.ps+tot.dm+tot.sa;
+  tb.innerHTML+=`<tr style="background:#F0F4FF"><td colspan="2" style="font-weight:700">TOTALES</td><td style="text-align:center;font-weight:700;color:#DC2626">${tot.f}</td><td style="text-align:center;font-weight:700;color:#DC2626">${tot.t}</td><td style="text-align:center;font-weight:700">${tot.pc}</td><td style="text-align:center;font-weight:700">${tot.ps}</td><td style="text-align:center;font-weight:700">${tot.dm}</td><td style="text-align:center;font-weight:700">${tot.sa}</td><td style="text-align:center;font-weight:700;color:#EA580C">${tt}</td></tr>`;
+}
+function expRep(){
+  if(!repData.length){toast('Genera un reporte primero','err');return}
+  let rows;
+  if(repTab==='asist'){
+    rows=[['Nombre','DNI','Fecha','Entrada','Salida','Otros']];
+    const g={};repData.forEach(d=>{const k=`${d.dni}_${d.fecha}`;if(!g[k])g[k]={nombre:d.nombre,dni:d.dni,fecha:d.fecha,ent:'',sal:'',otros:[]};if(d.evento_id==='entrada')g[k].ent=d.hora;else if(d.evento_id==='salida')g[k].sal=d.hora;else g[k].otros.push(`${d.evento_label} ${d.hora}`)});
+    Object.values(g).forEach(r=>rows.push([r.nombre,r.dni,r.fecha,r.ent||'',r.sal||'',r.otros.join(' | ')]));
+  }else{
+    rows=[['Nombre','DNI','Faltas','Tardanzas','Perm C/G','Perm S/G','Desc Med','Sal Ant','Total']];
+    const ba={};repData.forEach(d=>{if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pc:0,ps:0,dm:0,sa:0};const a=ba[d.dni];if(d.evento_id==='falta')a.f++;else if(d.evento_id==='tardanza')a.t++;else if(d.evento_id==='perm_con')a.pc++;else if(d.evento_id==='perm_sin')a.ps++;else if(d.evento_id==='desc_med')a.dm++;else if(d.evento_id==='sal_anticip')a.sa++});
+    Object.values(ba).forEach(r=>rows.push([r.nombre,r.dni,r.f,r.t,r.pc,r.ps,r.dm,r.sa,r.f+r.t+r.pc+r.ps+r.dm+r.sa]));
+  }
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=Object.assign(document.createElement('a'),{href:url,download:`centix_${repTab}_${$('rDesde').value}_${$('rHasta').value}.csv`});
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('CSV exportado','ok');
+}
+
+/* ══ ADMIN: USUARIOS ═════════════════════════════════ */
+let allUsers=[],editDni=null;
+function setupUsers(){
+  $('btnAddUser').addEventListener('click',()=>openUM(null));
+  $('mUserCan').addEventListener('click',()=>$('mUser').style.display='none');
+  $('mUserOk').addEventListener('click',saveUser);
+  $('uRol').addEventListener('change',()=>$('uSupGrp').style.display=$('uRol').value==='asesor'?'block':'none');
+  $('uSearch').addEventListener('input',filterUsers);
+  $('uRolF').addEventListener('change',filterUsers);
+  loadUsers();
+}
+async function loadUsers(){
+  const snap=await db.collection('usuarios').orderBy('nombre').get();
+  allUsers=snap.docs.map(d=>d.data());
+  const sups=allUsers.filter(u=>u.rol==='supervisor'||u.rol==='admin');
+  $('uSupSel').innerHTML='<option value="">Sin supervisor</option>'+sups.map(s=>`<option value="${s.dni}">${s.nombre}</option>`).join('');
+  renderUsers(allUsers);
+}
+function filterUsers(){
+  const q=$('uSearch').value.toLowerCase(),rf=$('uRolF').value;
+  renderUsers(allUsers.filter(u=>(!q||u.nombre.toLowerCase().includes(q)||u.dni.includes(q))&&(!rf||u.rol===rf)));
+}
+function renderUsers(users){
+  const el=$('userList');
+  if(!users.length){el.innerHTML='<div class="feed-empty">No hay usuarios</div>';return}
+  const rc={asesor:'#16A34A',supervisor:'#F07030',admin:'#DC2626'};
+  const rl={asesor:'Asesor',supervisor:'Supervisor',admin:'Admin'};
+  el.innerHTML=users.map(u=>{
+    const sup=u.supervisor_dni?(allUsers.find(x=>x.dni===u.supervisor_dni)?.nombre||u.supervisor_dni):'—';
+    return`<div class="user-item"><div class="uav">${ini(u.nombre)}</div><div style="flex:1"><div class="uname">${u.nombre}</div><div class="umeta">DNI: ${u.dni} · <span style="color:${rc[u.rol]};font-weight:600">${rl[u.rol]||u.rol}</span>${u.supervisor_dni?` · Sup: ${sup}`:''}${!u.activo?' · <span style="color:#DC2626">Inactivo</span>':''}</div></div><div style="display:flex;gap:5px"><button class="ubtn" onclick="openUM('${u.dni}')" title="Editar">✏️</button><button class="ubtn" onclick="toggleActivo('${u.dni}',${u.activo})" title="${u.activo?'Desactivar':'Activar'}">${u.activo?'🔒':'🔓'}</button></div></div>`;
+  }).join('');
+}
+function openUM(dni){
+  editDni=dni;$('mUserTitle').textContent=dni?'Editar Usuario':'Nuevo Usuario';
+  if(dni){const u=allUsers.find(x=>x.dni===dni)||{};$('uDni').value=u.dni||'';$('uDni').disabled=true;$('uNombre').value=u.nombre||'';$('uRol').value=u.rol||'asesor';$('uSupSel').value=u.supervisor_dni||'';$('uPass').value='';$('uPass').placeholder='Vacío para no cambiar'}
+  else{$('uDni').value='';$('uDni').disabled=false;$('uNombre').value='';$('uRol').value='asesor';$('uSupSel').value='';$('uPass').value='';$('uPass').placeholder='Vacío = DNI del usuario'}
+  $('uSupGrp').style.display=$('uRol').value==='asesor'?'block':'none';
+  $('mUser').style.display='flex';
+}
+async function saveUser(){
+  const dni=$('uDni').value.trim(),nombre=$('uNombre').value.trim(),rol=$('uRol').value,sup=$('uSupSel').value,pass=$('uPass').value.trim();
+  if(!dni||!nombre){toast('DNI y nombre son obligatorios','err');return}
+  const data={dni,nombre,rol,supervisor_dni:sup,activo:true,actualizado:firebase.firestore.FieldValue.serverTimestamp()};
+  if(!editDni){data.password=pass||dni;data.creado=firebase.firestore.FieldValue.serverTimestamp()}
+  else if(pass)data.password=pass;
+  try{await db.collection('usuarios').doc(dni).set(data,{merge:true});toast(`Usuario ${editDni?'actualizado':'creado'}`,'ok');$('mUser').style.display='none';loadUsers()}
+  catch(e){console.error(e);toast('Error al guardar','err')}
+}
+async function toggleActivo(dni,activo){
+  try{await db.collection('usuarios').doc(dni).update({activo:!activo});toast(`Usuario ${activo?'desactivado':'activado'}`,'ok');loadUsers()}
+  catch(e){toast('Error','err')}
+}
+
+/* ══ ARRANQUE ════════════════════════════════════════ */
+(async function arranque(){
+  const dni=getSavedDni();
+  if(dni){
+    try{
+      const snap=await db.collection('usuarios').doc(dni).get();
+      if(snap.exists){
+        const u=snap.data();
+        if(u.activo&&u.nombre&&u.rol){
+          saveSess({dni:u.dni,nombre:u.nombre,rol:u.rol,supervisor_dni:u.supervisor_dni||''});
+          initApp();return;
+        }
+      }
+    }catch(e){console.warn('Sesión expirada',e)}
+    clearSess();
+  }
+  $('pgLogin').style.display='block';$('pgApp').style.display='none';
+})();
+</script>
+</body>
+</html>

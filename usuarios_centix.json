@@ -1,0 +1,812 @@
+[
+  {
+    "dni": "70836003",
+    "nombre": "GONZALES AUCCA NAYELI MILAGROS",
+    "cargo": "JEFA DE ALMACEN",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "70836003",
+    "activo": true
+  },
+  {
+    "dni": "60722413",
+    "nombre": "DAMACIO MATO JUAN FERNANDO",
+    "cargo": "ASISTENTE DE ALMACEN",
+    "rol": "asesor",
+    "supervisor_dni": "70836003",
+    "password": "60722413",
+    "activo": true
+  },
+  {
+    "dni": "74880445",
+    "nombre": "OTINIANO CHAVEZ ANGEL OMAR",
+    "cargo": "ASISTENTE LOGISTICO",
+    "rol": "asesor",
+    "supervisor_dni": "70836003",
+    "password": "74880445",
+    "activo": true
+  },
+  {
+    "dni": "7020843",
+    "nombre": "GABRIEL LORENZO HERMUNDO",
+    "cargo": "MANTENIMIENTO VEHICULAR",
+    "rol": "supervisor",
+    "supervisor_dni": "",
+    "password": "7020843",
+    "activo": true
+  },
+  {
+    "dni": "7612914",
+    "nombre": "GONZALES YORBELINDA",
+    "cargo": "LIMPIEZA",
+    "rol": "asesor",
+    "supervisor_dni": "7020843",
+    "password": "7612914",
+    "activo": true
+  },
+  {
+    "dni": "7519681",
+    "nombre": "SILVA CHIRINOS JAIME RICARDO",
+    "cargo": "ELECTRICISTA",
+    "rol": "asesor",
+    "supervisor_dni": "7020843",
+    "password": "7519681",
+    "activo": true
+  },
+  {
+    "dni": "30426267",
+    "nombre": "SILVA NOGUERA RICARDO JOSE",
+    "cargo": "ASISTENTE ELECTRICISTA",
+    "rol": "asesor",
+    "supervisor_dni": "7020843",
+    "password": "30426267",
+    "activo": true
+  },
+  {
+    "dni": "42964457",
+    "nombre": "QUISPE ODAR MIGUEL ANGEL",
+    "cargo": "JEFE SOPORTE INTERNO",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "42964457",
+    "activo": true
+  },
+  {
+    "dni": "60167396",
+    "nombre": "TAYLOR LUIS ZAPATA CORREA",
+    "cargo": "ANALISTA DE SOPORTE",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "60167396",
+    "activo": true
+  },
+  {
+    "dni": "71351117",
+    "nombre": "ALBERCO MUCHA ELBER",
+    "cargo": "ANALISTA DE SOPORTE",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "71351117",
+    "activo": true
+  },
+  {
+    "dni": "46388166",
+    "nombre": "CHIONG LAOS MARIA ISABEL",
+    "cargo": "COORDINADORA DE INSTALACIONES",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "46388166",
+    "activo": true
+  },
+  {
+    "dni": "46342586",
+    "nombre": "QUISPE TABOADA JAIRO SANDER",
+    "cargo": "COORDINADOR DE INSTALACIONES",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "46342586",
+    "activo": true
+  },
+  {
+    "dni": "72410526",
+    "nombre": "OLIVERA SANCHEZ RICARDO BRAYAN",
+    "cargo": "COORDINADOR DE AVERIAS",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "72410526",
+    "activo": true
+  },
+  {
+    "dni": "73774706",
+    "nombre": "CORAZON PUENTE JEAN CARLOS",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "73774706",
+    "activo": true
+  },
+  {
+    "dni": "74597817",
+    "nombre": "FLORES LLAMO DIMAS",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "74597817",
+    "activo": true
+  },
+  {
+    "dni": "74763696",
+    "nombre": "GALINDO HUAMANTINCO JUAN DIEGO",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "74763696",
+    "activo": true
+  },
+  {
+    "dni": "70589411",
+    "nombre": "POMIANO AYALA ANJALÍ GINA",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "70589411",
+    "activo": true
+  },
+  {
+    "dni": "74586010",
+    "nombre": "RAMOS MENDOZA JEAN CARLOS",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "74586010",
+    "activo": true
+  },
+  {
+    "dni": "72746666",
+    "nombre": "SALLUCA MOLLEAPAZA ENZO ARTURO",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "72746666",
+    "activo": true
+  },
+  {
+    "dni": "48126781",
+    "nombre": "CCANTO CCORA JORGE EDUARDO",
+    "cargo": "SOPORTE TECNICO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "48126781",
+    "activo": true
+  },
+  {
+    "dni": "71433502",
+    "nombre": "RIOS HUAMANI JUAN CARLOS",
+    "cargo": "ANALISTA DE ING. DE DATOS",
+    "rol": "asesor",
+    "supervisor_dni": "46820269",
+    "password": "71433502",
+    "activo": true
+  },
+  {
+    "dni": "46820269",
+    "nombre": "CASTILLO PINTO KEILA DAMARIS",
+    "cargo": "JEFA DE OPERACIONES Y GESTIÓN COMERCIAL",
+    "rol": "admin",
+    "supervisor_dni": "",
+    "password": "46820269",
+    "activo": true
+  },
+  {
+    "dni": "77172220",
+    "nombre": "HUAMANI ENCISO LEONARDO JAIME",
+    "cargo": "ING. DE DATOS",
+    "rol": "asesor",
+    "supervisor_dni": "46820269",
+    "password": "77172220",
+    "activo": true
+  },
+  {
+    "dni": "76526903",
+    "nombre": "BERRIOS DOMINGUEZ SAMIRA SAMANTA",
+    "cargo": "JEFA DE PEXT",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "76526903",
+    "activo": true
+  },
+  {
+    "dni": "74486480",
+    "nombre": "GARCIA ALVAREZ CARLOS BUSH",
+    "cargo": "COORDINADOR DE PLANTA EXTERNA",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "74486480",
+    "activo": true
+  },
+  {
+    "dni": "74731737",
+    "nombre": "LIZARRAGA DOMINGUEZ DIEGO IVAN",
+    "cargo": "COORDINADOR DE TENDIDO",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "74731737",
+    "activo": true
+  },
+  {
+    "dni": "70274102",
+    "nombre": "RODRIGUEZ CASTRO JOEL ANTONIO",
+    "cargo": "COORDINADOR DE PLANTA EXTERNA",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "70274102",
+    "activo": true
+  },
+  {
+    "dni": "74547046",
+    "nombre": "ORTIZ QUISPE BRAYAN SALOMON",
+    "cargo": "INGENIERO CATV",
+    "rol": "asesor",
+    "supervisor_dni": "46820269",
+    "password": "74547046",
+    "activo": true
+  },
+  {
+    "dni": "48445434",
+    "nombre": "PALOMINO LLAMOCCA MAIKOL MEKE",
+    "cargo": "AUDITOR DE CAMPO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "48445434",
+    "activo": true
+  },
+  {
+    "dni": "44353814",
+    "nombre": "COLLAZOS CASTRO YEVGUENI",
+    "cargo": "FUSIONADOR",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "44353814",
+    "activo": true
+  },
+  {
+    "dni": "47352891",
+    "nombre": "FLORES CHUNGA JAMBLER JUSSEPI",
+    "cargo": "FUSIONADOR",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "47352891",
+    "activo": true
+  },
+  {
+    "dni": "73444510",
+    "nombre": "RUIZ  BORRA MARCOS DANIEL",
+    "cargo": "FUSIONADOR",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "73444510",
+    "activo": true
+  },
+  {
+    "dni": "75899260",
+    "nombre": "GRANADOS CHILENO JEAN PIERE",
+    "cargo": "FUSIONADOR/TECNICO DE TENDIDO",
+    "rol": "asesor",
+    "supervisor_dni": "76526903",
+    "password": "75899260",
+    "activo": true
+  },
+  {
+    "dni": "6490535",
+    "nombre": "ABREU ALARCON LEONARDO",
+    "cargo": "TECNICO DE TENDIDO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "6490535",
+    "activo": true
+  },
+  {
+    "dni": "71314286",
+    "nombre": "VASQUEZ CANDELA ARNOLD ARON",
+    "cargo": "TECNICO DE TENDIDO",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "71314286",
+    "activo": true
+  },
+  {
+    "dni": "72396349",
+    "nombre": "OLIVERA SUCA JHON MAY",
+    "cargo": "TECNICO DE AVERIAS",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "72396349",
+    "activo": true
+  },
+  {
+    "dni": "3312336",
+    "nombre": "CALDERON BARRETO BENJAMIN ENRIQUE",
+    "cargo": "TECNICO DE AVERIAS",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "3312336",
+    "activo": true
+  },
+  {
+    "dni": "41742873",
+    "nombre": "CASTAÑEDA BENITO JADER",
+    "cargo": "TECNICO DE AVERIAS",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "41742873",
+    "activo": true
+  },
+  {
+    "dni": "73220279",
+    "nombre": "AGUILAR SHAHUANO WILLY EZEQUIEL",
+    "cargo": "TECNICO DE AVERIAS",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "73220279",
+    "activo": true
+  },
+  {
+    "dni": "2197533",
+    "nombre": "SANTANA DICURU JORDANCH",
+    "cargo": "TECNICO DE CAMPO PRODUCCION",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "2197533",
+    "activo": true
+  },
+  {
+    "dni": "71550675",
+    "nombre": "MENDEZ BOLO JAIR JUNIOR",
+    "cargo": "TECNICO DE INSTALACIONES",
+    "rol": "asesor",
+    "supervisor_dni": "42964457",
+    "password": "71550675",
+    "activo": true
+  },
+  {
+    "dni": "60769332",
+    "nombre": "RIVERA CANO JHON ALEXANDER",
+    "cargo": "JEFE DE COBRANZAS Y PAGOS",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "60769332",
+    "activo": true
+  },
+  {
+    "dni": "6585590",
+    "nombre": "ACEVEDO GIL DARISABEL MARIA",
+    "cargo": "ASESORA DE COBRANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "6585590",
+    "activo": true
+  },
+  {
+    "dni": "70532274",
+    "nombre": "LAZARO LAZO DELIA YHOALIBETH",
+    "cargo": "ASESORA DE COBRANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "70532274",
+    "activo": true
+  },
+  {
+    "dni": "45837977",
+    "nombre": "CASTILLO HERNANDEZ FIORELLA STEFFANY",
+    "cargo": "ASESORA DE COBRANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "45837977",
+    "activo": true
+  },
+  {
+    "dni": "73980657",
+    "nombre": "BACA ÑAHUI LENIN JHAMPIER",
+    "cargo": "ASESOR DE COBRANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "73980657",
+    "activo": true
+  },
+  {
+    "dni": "70624531",
+    "nombre": "PALOMINO GURREONERO YARELA NICOLE",
+    "cargo": "ASESORA DE COBRANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "70624531",
+    "activo": true
+  },
+  {
+    "dni": "73988604",
+    "nombre": "SOTO QUISPE CHRISTIAN ALEXANDER",
+    "cargo": "ASESOR DE COBRANZAS NOCTURNO",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "73988604",
+    "activo": true
+  },
+  {
+    "dni": "72555475",
+    "nombre": "CANDIA MAMANI ANDREW FELIX",
+    "cargo": "COORDINADOR DE MOTORIZADO",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "72555475",
+    "activo": true
+  },
+  {
+    "dni": "75752131",
+    "nombre": "HIGA PALOMINO ERICKSON HENRY",
+    "cargo": "MOTORIZADO",
+    "rol": "asesor",
+    "supervisor_dni": "60769332",
+    "password": "75752131",
+    "activo": true
+  },
+  {
+    "dni": "47056559",
+    "nombre": "APAESTEGUI VILCHEZ CESAR EDIDSON",
+    "cargo": "ASESOR DE POST VENTA LEVEL ONE",
+    "rol": "asesor",
+    "supervisor_dni": "46820269",
+    "password": "47056559",
+    "activo": true
+  },
+  {
+    "dni": "75402475",
+    "nombre": "DAVILA MARTINEZ BRAYAN",
+    "cargo": "JEFE COMERCIAL",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "75402475",
+    "activo": true
+  },
+  {
+    "dni": "72035768",
+    "nombre": "ROMERO GONZALES AZUCENA ABI",
+    "cargo": "VENDEDORA DE OFICINA",
+    "rol": "asesor",
+    "supervisor_dni": "75402475",
+    "password": "72035768",
+    "activo": true
+  },
+  {
+    "dni": "46619054",
+    "nombre": "MEDINA JAIMES ANA PATRICIA",
+    "cargo": "VENDEDORA DE OFICINA",
+    "rol": "asesor",
+    "supervisor_dni": "75402475",
+    "password": "46619054",
+    "activo": true
+  },
+  {
+    "dni": "75070272",
+    "nombre": "GUEVARA CARDENAS THOMAS WALTER",
+    "cargo": "PEGADOR",
+    "rol": "asesor",
+    "supervisor_dni": "75402475",
+    "password": "75070272",
+    "activo": true
+  },
+  {
+    "dni": "77639354",
+    "nombre": "LUQUE NIEVES JEFFERSON ESTEBAN",
+    "cargo": "PEGADOR",
+    "rol": "asesor",
+    "supervisor_dni": "75402475",
+    "password": "77639354",
+    "activo": true
+  },
+  {
+    "dni": "70270835",
+    "nombre": "CHUQUIMBALQUI SORIA JEAN PATRICK",
+    "cargo": "PEGADOR",
+    "rol": "asesor",
+    "supervisor_dni": "75402475",
+    "password": "70270835",
+    "activo": true
+  },
+  {
+    "dni": "10498708",
+    "nombre": "VELASQUEZ MELENDEZ ALBERTO",
+    "cargo": "PEGADOR",
+    "rol": "asesor",
+    "supervisor_dni": "75402475",
+    "password": "10498708",
+    "activo": true
+  },
+  {
+    "dni": "43469558",
+    "nombre": "TORRES URBANO TOMMY JONATHAN",
+    "cargo": "JEFE DE CONTABILIDAD",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "43469558",
+    "activo": true
+  },
+  {
+    "dni": "75768299",
+    "nombre": "GUTIERREZ LLACCHUA MAYRA GERALDINE",
+    "cargo": "ASISTENTE DE CONTABILIDAD",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "75768299",
+    "activo": true
+  },
+  {
+    "dni": "43273639",
+    "nombre": "JUIPA CAMPO ALCIRA",
+    "cargo": "GERENTE",
+    "rol": "admin",
+    "supervisor_dni": "",
+    "password": "43273639",
+    "activo": true
+  },
+  {
+    "dni": "43639475",
+    "nombre": "APONTE HINOJOSA JACQUELINE ADRIANA",
+    "cargo": "ADMINISTRADORA",
+    "rol": "admin",
+    "supervisor_dni": "43273639",
+    "password": "43639475",
+    "activo": true
+  },
+  {
+    "dni": "10529870",
+    "nombre": "PITTMAN QUENAYA SANDRA JENIFFER",
+    "cargo": "JEFA DE FINANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "10529870",
+    "activo": true
+  },
+  {
+    "dni": "72177655",
+    "nombre": "IZQUIERDO LUJAN MERLY ESMIDIA",
+    "cargo": "ASISTENTE DE FINANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "72177655",
+    "activo": true
+  },
+  {
+    "dni": "77907538",
+    "nombre": "MEZA MOZO JHOSSELIN JHADIRA",
+    "cargo": "ASISTENTE DE FINANZAS",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "77907538",
+    "activo": true
+  },
+  {
+    "dni": "41408757",
+    "nombre": "QUISPE CAMASCA MARIA ANGELICA",
+    "cargo": "JEFA DE COMPRAS",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "41408757",
+    "activo": true
+  },
+  {
+    "dni": "45466625",
+    "nombre": "TERAN CASTILLO EVELYN",
+    "cargo": "JEFA DE RETENCIONES Y POST VENTA",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "45466625",
+    "activo": true
+  },
+  {
+    "dni": "76407090",
+    "nombre": "RUIZ PINEDO GEYDY NAYELLY",
+    "cargo": "ASESORA DE RETENCIONES",
+    "rol": "asesor",
+    "supervisor_dni": "45466625",
+    "password": "76407090",
+    "activo": true
+  },
+  {
+    "dni": "42550233",
+    "nombre": "NAVARRO YOVERA GIOHANA LIZETH",
+    "cargo": "ASESORA DE RETENCIONES",
+    "rol": "asesor",
+    "supervisor_dni": "45466625",
+    "password": "42550233",
+    "activo": true
+  },
+  {
+    "dni": "20641005",
+    "nombre": "CANCHO CAMARENA MARIANO SAMUEL",
+    "cargo": "TECNICO DE RETENCIONES",
+    "rol": "asesor",
+    "supervisor_dni": "45466625",
+    "password": "20641005",
+    "activo": true
+  },
+  {
+    "dni": "71698624",
+    "nombre": "CALCINA MUÑOZ BERTHA MELISSA",
+    "cargo": "JEFA DE RR.HH",
+    "rol": "asesor",
+    "supervisor_dni": "43273639",
+    "password": "71698624",
+    "activo": true
+  },
+  {
+    "dni": "74562626",
+    "nombre": "PEREZ ROMISONCCO LIZ MELY",
+    "cargo": "ASISTENTE DE RECURSOS HUMANOS",
+    "rol": "asesor",
+    "supervisor_dni": "43273639",
+    "password": "74562626",
+    "activo": true
+  },
+  {
+    "dni": "72848074",
+    "nombre": "TUPIA ZEVALLOS BRYAN WILFREDO",
+    "cargo": "PLANILLA",
+    "rol": "asesor",
+    "supervisor_dni": "43273639",
+    "password": "72848074",
+    "activo": true
+  },
+  {
+    "dni": "22519287",
+    "nombre": "JUIPA HUARANGA NICOMEDES EVARISTO",
+    "cargo": "JEFATURA DE ALTARA",
+    "rol": "asesor",
+    "supervisor_dni": "46820269",
+    "password": "22519287",
+    "activo": true
+  },
+  {
+    "dni": "44647353",
+    "nombre": "SANTA MARIA VILLALBA VICTOR GIOVANNI",
+    "cargo": "COORDINADOR DE EVENTOS",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "44647353",
+    "activo": true
+  },
+  {
+    "dni": "73971190",
+    "nombre": "CHAPARRO VALDERRAMA KEYLA MARISOL",
+    "cargo": "COORDINADORA DE EVENTOS",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "73971190",
+    "activo": true
+  },
+  {
+    "dni": "76887676",
+    "nombre": "VALDEZ SANTOS LIAN JEHU",
+    "cargo": "ASISTENTE ADMINISTRATIVO",
+    "rol": "asesor",
+    "supervisor_dni": "43639475",
+    "password": "76887676",
+    "activo": true
+  },
+  {
+    "dni": "77169380",
+    "nombre": "HUARANGA MUÑOZ FRANK YAIMAR",
+    "cargo": "COORDINADOR DE MARKETING",
+    "rol": "supervisor",
+    "supervisor_dni": "43639475",
+    "password": "77169380",
+    "activo": true
+  },
+  {
+    "dni": "76744512",
+    "nombre": "GERONIMO VARILLAS SAMUEL CESAR",
+    "cargo": "COORDINADOR DE MARKETING",
+    "rol": "asesor",
+    "supervisor_dni": "77169380",
+    "password": "76744512",
+    "activo": true
+  },
+  {
+    "dni": "73969856",
+    "nombre": "CASTILLO VARGAS LISBETH",
+    "cargo": "DISEÑADORA GRAFICA",
+    "rol": "asesor",
+    "supervisor_dni": "77169380",
+    "password": "73969856",
+    "activo": true
+  },
+  {
+    "dni": "76601169",
+    "nombre": "JACAY TERRONES JEAN FRANCO",
+    "cargo": "DISEÑADOR GRAFICO",
+    "rol": "asesor",
+    "supervisor_dni": "77169380",
+    "password": "76601169",
+    "activo": true
+  },
+  {
+    "dni": "75328652",
+    "nombre": "NINAQUISPE LIÑON GIANELLA ANDREA",
+    "cargo": "DISEÑADORA GRAFICA",
+    "rol": "asesor",
+    "supervisor_dni": "77169380",
+    "password": "75328652",
+    "activo": true
+  },
+  {
+    "dni": "46011523",
+    "nombre": "SUAREZ CHIRINOS ALEXANDER WILER",
+    "cargo": "DISEÑADOR DE INTERIORES",
+    "rol": "asesor",
+    "supervisor_dni": "77169380",
+    "password": "46011523",
+    "activo": true
+  },
+  {
+    "dni": "74206392",
+    "nombre": "SILVA SERNAQUE SAYURI MEYLIN",
+    "cargo": "DISEÑADORA DE INTERIORES",
+    "rol": "asesor",
+    "supervisor_dni": "77169380",
+    "password": "74206392",
+    "activo": true
+  },
+  {
+    "dni": "60652267",
+    "nombre": "MAVILA ONCEBAY ANAHI",
+    "cargo": "SUPERVISORA DE VENTAS",
+    "rol": "supervisor",
+    "supervisor_dni": "46820269",
+    "password": "60652267",
+    "activo": true
+  },
+  {
+    "dni": "75521826",
+    "nombre": "LOPEZ HUILLCA PATRICIA EVELYN",
+    "cargo": "ASESORA DE VENTAS",
+    "rol": "asesor",
+    "supervisor_dni": "60652267",
+    "password": "75521826",
+    "activo": true
+  },
+  {
+    "dni": "74294025",
+    "nombre": "RUIZ CESPEDES GINGER ALEXANDRA",
+    "cargo": "ASESORA DE VENTAS",
+    "rol": "asesor",
+    "supervisor_dni": "60652267",
+    "password": "74294025",
+    "activo": true
+  },
+  {
+    "dni": "9652001",
+    "nombre": "LOPEZ DOMINGUEZ PEDRO ALONSO",
+    "cargo": "ASESOR DE VENTAS",
+    "rol": "asesor",
+    "supervisor_dni": "60652267",
+    "password": "9652001",
+    "activo": true
+  },
+  {
+    "dni": "7158867",
+    "nombre": "NAVARRO HUAMAN ELOY ABDALIO",
+    "cargo": "ASESOR DE VENTAS",
+    "rol": "asesor",
+    "supervisor_dni": "60652267",
+    "password": "7158867",
+    "activo": true
+  },
+  {
+    "dni": "41831787",
+    "nombre": "ROQUE PILCO EFRAIN FELICIANO",
+    "cargo": "OPERACIONES",
+    "rol": "asesor",
+    "supervisor_dni": "43273639",
+    "password": "41831787",
+    "activo": true
+  }
+]
