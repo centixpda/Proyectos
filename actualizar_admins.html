@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Actualizar Administradores · CAP CENTIX</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:#F0F4F8;color:#1E293B;padding:24px 16px 60px;min-height:100vh}
+.wrap{max-width:680px;margin:0 auto}
+header{background:linear-gradient(135deg,#0D2347,#1B5EA8);color:#fff;padding:22px 24px;border-radius:16px;margin-bottom:20px}
+header h1{font-size:19px;margin-bottom:4px}
+header p{font-size:13px;opacity:.8}
+.card{background:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px;border:1px solid #E2E8F0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card h2{font-size:14px;font-weight:700;margin-bottom:12px;color:#0D2347}
+.user-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #F1F5F9}
+.user-row:last-child{border-bottom:none}
+.uav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1B5EA8,#F07030);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.uinfo{flex:1}
+.uname{font-size:13.5px;font-weight:700}
+.umeta{font-size:12px;color:#64748B;margin-top:2px}
+.change{font-size:11.5px;margin-top:6px;padding:4px 10px;background:#EFF6FF;border-radius:6px;color:#1E40AF;font-weight:600;display:inline-block}
+.warn-box{background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:14px 16px;font-size:13px;color:#9A3412;margin-bottom:16px}
+.ok-box{background:#F0FDF4;border:1px solid #86EFAC;border-radius:12px;padding:18px;text-align:center;display:none}
+.ok-box h3{color:#15803D;font-size:16px;margin-bottom:6px}
+.ok-box p{font-size:13px;color:#166534}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,#1B5EA8,#F07030);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-top:4px}
+.btn:hover{opacity:.9}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.log{margin-top:14px;background:#1E293B;color:#E2E8F0;border-radius:10px;padding:14px 16px;font-size:12px;font-family:monospace;line-height:1.8;min-height:60px;white-space:pre-wrap;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>🔧 Actualizar Administradores · CAP CENTIX</h1>
+  <p>Actualiza el rol de los 4 usuarios a Administrador con la jerarquía correcta.</p>
+</header>
+
+<div class="warn-box">
+  ⚠️ Ejecuta este script una sola vez. Después puedes eliminarlo del servidor.
+</div>
+
+<div class="card">
+  <h2>Usuarios a actualizar</h2>
+
+  <div class="user-row">
+    <div class="uav">KC</div>
+    <div class="uinfo">
+      <div class="uname">CASTILLO PINTO KEILA DAMARIS</div>
+      <div class="umeta">DNI: 46820269</div>
+      <div class="change">rol → admin · supervisor_dni → 43273639 (Juipa Campo Alcira)</div>
+    </div>
+  </div>
+
+  <div class="user-row">
+    <div class="uav">JC</div>
+    <div class="uinfo">
+      <div class="uname">JUIPA CAMPO ALCIRA</div>
+      <div class="umeta">DNI: 43273639</div>
+      <div class="change">rol → admin · conserva su jefe actual del sistema</div>
+    </div>
+  </div>
+
+  <div class="user-row">
+    <div class="uav">AH</div>
+    <div class="uinfo">
+      <div class="uname">APONTE HINOJOSA JACQUELINE ADRIANA</div>
+      <div class="umeta">DNI: 43639475</div>
+      <div class="change">rol → admin · conserva su jefe actual del sistema</div>
+    </div>
+  </div>
+
+  <div class="user-row">
+    <div class="uav">TZ</div>
+    <div class="uinfo">
+      <div class="uname">TUPIA ZEVALLOS BRYAN WILFREDO</div>
+      <div class="umeta">DNI: 72848074</div>
+      <div class="change">rol → admin · conserva su jefe actual del sistema</div>
+    </div>
+  </div>
+</div>
+
+<button class="btn" id="btnRun">Ejecutar actualización →</button>
+<div class="log" id="log"></div>
+
+<div class="ok-box" id="okBox">
+  <h3>✅ Actualización completada</h3>
+  <p>Los 4 usuarios ahora tienen rol de Administrador.<br>
+  Pueden iniciar sesión y ver todos los equipos y personal.</p>
+</div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+const FB_CFG = {
+  apiKey:            "AIzaSyD7G488hUP4Qw7FHSVZRTMXvwGX8P_nAwU",
+  authDomain:        "centix-asistencia.firebaseapp.com",
+  projectId:         "centix-asistencia",
+  storageBucket:     "centix-asistencia.firebasestorage.app",
+  messagingSenderId: "421810748910",
+  appId:             "1:421810748910:web:b36da00769495e3cd322ff"
+};
+firebase.initializeApp(FB_CFG);
+const db = firebase.firestore();
+
+const ADMINS = [
+  { dni: '46820269', nombre: 'CASTILLO PINTO KEILA DAMARIS',        supervisor_dni: '43273639' },
+  { dni: '43273639', nombre: 'JUIPA CAMPO ALCIRA',                   supervisor_dni: null },
+  { dni: '43639475', nombre: 'APONTE HINOJOSA JACQUELINE ADRIANA',   supervisor_dni: null },
+  { dni: '72848074', nombre: 'TUPIA ZEVALLOS BRYAN WILFREDO',        supervisor_dni: null },
+];
+
+const logEl = document.getElementById('log');
+function log(msg) {
+  logEl.style.display = 'block';
+  logEl.textContent += msg + '\n';
+}
+
+document.getElementById('btnRun').addEventListener('click', async function() {
+  this.disabled = true;
+  this.textContent = 'Procesando…';
+  log('Iniciando actualización...\n');
+
+  let ok = 0;
+
+  // Paso 1: Actualizar los 4 administradores
+  for (const u of ADMINS) {
+    try {
+      const datos = {
+        dni: u.dni,
+        nombre: u.nombre,
+        rol: 'admin',
+        activo: true,
+        actualizado: firebase.firestore.FieldValue.serverTimestamp(),
+      };
+      if (u.supervisor_dni !== null) {
+        datos.supervisor_dni = u.supervisor_dni;
+      }
+      await db.collection('usuarios').doc(u.dni).set(datos, { merge: true });
+      log(`✅ ${u.nombre} (${u.dni}) → admin${u.supervisor_dni ? ' · reporta a: ' + u.supervisor_dni : ''}`);
+      ok++;
+    } catch(e) {
+      log(`❌ ERROR en ${u.nombre}: ${e.message}`);
+    }
+  }
+
+  // Paso 2: Limpiar cuentas de prueba con nombre "Usuario"
+  log('\nBuscando cuentas de prueba (nombre="Usuario")...');
+  try {
+    const snap = await db.collection('usuarios').where('nombre', '==', 'Usuario').get();
+    if (snap.empty) {
+      log('✅ No se encontraron cuentas de prueba.');
+    } else {
+      for (const doc of snap.docs) {
+        await db.collection('usuarios').doc(doc.id).update({ activo: false });
+        log(`🗑️ Cuenta desactivada: DNI ${doc.id} (nombre="Usuario")`);
+      }
+    }
+  } catch(e) {
+    log(`⚠️ No se pudo limpiar cuentas de prueba: ${e.message}`);
+  }
+
+  log(`\n${ok}/4 administradores actualizados.`);
+  if (ok === 4) {
+    document.getElementById('okBox').style.display = 'block';
+    this.textContent = '✓ Completado';
+  } else {
+    this.textContent = 'Reintentar';
+    this.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

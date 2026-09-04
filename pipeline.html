@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pipeline · CAP CENTIX</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#F0F4F8;color:#1E293B;padding:32px 20px 60px;min-height:100vh}
+.wrap{max-width:1160px;margin:0 auto}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0D2347 0%,#1B5EA8 100%);color:#fff;border-radius:20px;padding:32px 40px;margin-bottom:32px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden}
+.header::after{content:'CAP CENTIX';position:absolute;right:40px;bottom:-16px;font-size:96px;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:-4px;pointer-events:none}
+.header-icon{font-size:48px;flex-shrink:0}
+.header h1{font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
+.header h1 span{color:#F07030}
+.header p{font-size:13.5px;opacity:.75;max-width:560px;line-height:1.65}
+.header-pills{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:.3px}
+
+/* SECTION LABEL */
+.slbl{font-size:10.5px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:#E2E8F0}
+
+/* ═══════════════════════════════════════════
+   FLOW DIAGRAM
+═══════════════════════════════════════════ */
+.flow-wrap{background:#fff;border-radius:20px;border:1px solid #E2E8F0;padding:40px 36px;margin-bottom:32px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+
+/* Top legend */
+.flow-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid #F1F5F9}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#475569}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* SETUP BANNER */
+.setup-banner{background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1.5px dashed #FCD34D;border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:32px}
+.setup-icon{font-size:24px;flex-shrink:0}
+.setup-text strong{font-size:12.5px;font-weight:700;color:#92400E;display:block;margin-bottom:2px}
+.setup-text span{font-size:12px;color:#B45309}
+.setup-tag{margin-left:auto;background:#FEF3C7;border:1px solid #FCD34D;border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;color:#92400E;white-space:nowrap;flex-shrink:0}
+
+/* ── Node box ── */
+.fnode{border-radius:14px;padding:16px 18px;position:relative;transition:box-shadow .18s,transform .18s;cursor:default}
+.fnode:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+
+.fnode-icon{font-size:26px;margin-bottom:8px}
+.fnode-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.fnode-desc{font-size:11.5px;line-height:1.55;opacity:.8}
+.fnode-file{display:inline-block;margin-top:8px;font-size:10.5px;font-weight:600;font-family:monospace;padding:3px 8px;border-radius:6px}
+
+/* Colors by type */
+.fnode.input{background:#FFF7ED;border:1.5px solid #FED7AA}
+.fnode.input .fnode-title{color:#C2410C}
+.fnode.input .fnode-file{background:#FEF3C7;color:#92400E}
+
+.fnode.bio{background:#F0FDF4;border:1.5px solid #BBF7D0}
+.fnode.bio .fnode-title{color:#15803D}
+.fnode.bio .fnode-file{background:#DCFCE7;color:#15803D}
+
+.fnode.out{background:#F5F3FF;border:1.5px solid #DDD6FE}
+.fnode.out .fnode-title{color:#5B21B6}
+.fnode.out .fnode-file{background:#EDE9FE;color:#5B21B6}
+
+/* DB box */
+.db-row{display:flex;justify-content:center;margin:8px 0}
+.db-box{width:260px;border-radius:16px;padding:22px 20px;text-align:center;background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:2px solid #60A5FA;box-shadow:0 4px 16px rgba(37,99,235,.15)}
+.db-box .db-icon{font-size:36px;margin-bottom:8px}
+.db-box .db-title{font-size:15px;font-weight:800;color:#1D4ED8;margin-bottom:4px}
+.db-box .db-sub{font-size:11.5px;color:#3B82F6;line-height:1.5}
+.db-collections{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.db-col{background:#DBEAFE;border:1px solid #93C5FD;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#1E40AF;font-family:monospace}
+
+/* Step label */
+.step-lbl{font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:100px;display:inline-block;margin-bottom:6px}
+.step-orange{background:#F07030}
+.step-green{background:#16A34A}
+
+/* Output row */
+.out-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:16px}
+
+/* ═══════════════════════════════════════════
+   REST OF SECTIONS
+═══════════════════════════════════════════ */
+.three-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:28px}
+.info-card{background:#fff;border-radius:14px;padding:20px;border:1px solid #E2E8F0;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.info-card .ic-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.info-card .ic-icon{font-size:24px}
+.info-card .ic-name{font-size:13.5px;font-weight:700;color:#0D2347}
+.info-card p{font-size:12.5px;color:#64748B;line-height:1.6}
+.info-card .ic-tag{display:inline-block;margin-top:10px;font-size:10.5px;font-weight:600;padding:3px 10px;border-radius:100px}
+.tag-free{background:#F0FDF4;color:#15803D}
+.tag-ext{background:#FFF7ED;color:#C2410C}
+.tag-cdn{background:#EFF6FF;color:#1D4ED8}
+
+.file-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-bottom:28px}
+.file-item{background:#fff;border-radius:12px;border:1px solid #E2E8F0;padding:14px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.fi-icon{font-size:24px;flex-shrink:0}
+.fi-name{font-size:12.5px;font-weight:700;color:#0D2347;font-family:monospace;margin-bottom:3px}
+.fi-desc{font-size:12px;color:#64748B;line-height:1.5}
+.fi-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.fi-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:#F1F5F9;color:#475569}
+
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px}
+.stat-card{background:#fff;border-radius:14px;padding:20px;border:1px solid #E2E8F0;box-shadow:0 1px 4px rgba(0,0,0,.05);text-align:center}
+.stat-n{font-size:38px;font-weight:800;color:#1B5EA8;line-height:1}
+.stat-u{font-size:12px;font-weight:600;color:#1B5EA8}
+.stat-l{font-size:12px;color:#64748B;margin-top:5px;line-height:1.4}
+.stat-icon{font-size:24px;margin-bottom:8px}
+
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px;margin-bottom:28px}
+.ev-chip{background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.ev-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.ev-lbl{font-size:12px;color:#334155}
+
+.footer{background:#0D2347;color:rgba(255,255,255,.5);border-radius:14px;padding:20px 28px;text-align:center;font-size:12px;line-height:1.7;margin-top:8px}
+.footer strong{color:#fff}
+
+@media(max-width:700px){
+  .header{flex-direction:column}
+  .header::after{display:none}
+  .out-row{grid-template-columns:1fr}
+  .flow-wrap{padding:24px 16px}
+  .flow-legend{gap:12px}
+
+  /* En móvil las dos rutas se apilan verticalmente */
+  .paths-grid{display:flex !important;flex-direction:column !important;gap:0 !important}
+  .paths-divider{display:none !important}
+  .paths-or{display:flex;justify-content:center;padding:12px 0;font-size:11px;font-weight:700;color:#94A3B8;letter-spacing:.5px;text-transform:uppercase}
+
+  /* Ocultar SVG de convergencia y reemplazar con flecha simple */
+  .merge-svg{display:none !important}
+  .merge-mobile{display:flex !important}
+
+  .three-grid{grid-template-columns:1fr}
+  .file-list{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .ev-grid{grid-template-columns:1fr 1fr}
+  .setup-banner{flex-wrap:wrap}
+  .setup-tag{margin-left:0;margin-top:8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">📋</div>
+  <div>
+    <h1>CAP <span>CENTIX</span></h1>
+    <p>Sistema integral de Control de Asistencia Personal. Registra, procesa y reporta los eventos de los 90 colaboradores de Centix en tiempo real.</p>
+    <div class="header-pills">
+      <span class="hpill">Firebase Firestore</span>
+      <span class="hpill">Vercel Hosting</span>
+      <span class="hpill">ZKTeco Biométrico</span>
+      <span class="hpill">$0 / mes</span>
+    </div>
+  </div>
+</div>
+
+<!-- OBJETIVO -->
+<div class="slbl">Objetivo</div>
+<div class="three-grid" style="margin-bottom:28px">
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">🎯</div><div class="ic-name">Problema</div></div>
+    <p>Controlar la asistencia de ~90 colaboradores con múltiples eventos diarios (entradas, permisos, tardanzas, salidas) sin hojas de cálculo manuales.</p>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">⚡</div><div class="ic-name">Solución</div></div>
+    <p>App web en tiempo real con login por DNI, registro de 27 tipos de eventos, dashboard por supervisor y exportación directa a Excel.</p>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">♾️</div><div class="ic-name">Resultado</div></div>
+    <p>Infraestructura 100% gratuita con más de 20 años de capacidad disponible. Accesible desde cualquier dispositivo con navegador.</p>
+  </div>
+</div>
+
+<!-- ═══════ PIPELINE VISUAL ═══════ -->
+<div class="slbl">Flujo del sistema</div>
+<div class="flow-wrap">
+
+  <!-- Leyenda -->
+  <div class="flow-legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#FED7AA"></div> Entrada de datos</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#93C5FD"></div> Base de datos (Firebase)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#DDD6FE"></div> Salida / Resultados</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#FCD34D;border:1px dashed #D97706"></div> Solo al inicio (setup)</div>
+  </div>
+
+  <!-- SETUP (one-time) -->
+  <div class="setup-banner">
+    <div class="setup-icon">⚙️</div>
+    <div class="setup-text">
+      <strong>PASO 0 — Configuración inicial (solo una vez)</strong>
+      <span>Se cargaron los 90 colaboradores a Firebase usando <code>cargar_usuarios.html</code>. Una vez hecho, no se repite.</span>
+    </div>
+    <div class="setup-tag">Setup completado ✓</div>
+  </div>
+
+  <!-- Flecha down hacia las dos rutas -->
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:8px">
+    <div style="width:2px;height:20px;background:#E2E8F0"></div>
+    <div style="font-size:10px;font-weight:700;color:#94A3B8;letter-spacing:.5px;text-transform:uppercase;margin:4px 0">Operación diaria</div>
+    <div style="width:2px;height:10px;background:#E2E8F0"></div>
+    <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #CBD5E1"></div>
+  </div>
+
+  <!-- ══ DOS RUTAS DE ENTRADA ══ -->
+  <div class="paths-grid" style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:flex-start;margin-bottom:0">
+
+    <!-- RUTA A: Registro manual -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+      <span class="step-lbl step-orange">Ruta A · Registro manual</span>
+
+      <div class="fnode input" style="width:100%">
+        <div class="fnode-icon">👤</div>
+        <div class="fnode-title">Supervisor inicia sesión</div>
+        <div class="fnode-desc">Ingresa con su DNI y contraseña. El sistema detecta su rol y filtra solo a sus colaboradores.</div>
+        <span class="fnode-file">index.html · Login</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;padding:8px 0">
+        <div style="width:2px;height:18px;background:#FED7AA"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #FDBA74"></div>
+      </div>
+
+      <div class="fnode input" style="width:100%">
+        <div class="fnode-icon">📝</div>
+        <div class="fnode-title">Selecciona colaborador + evento</div>
+        <div class="fnode-desc">Elige al colaborador del listado y registra el tipo de evento (entrada, permiso, tardanza, etc.) con hora automática.</div>
+        <span class="fnode-file">index.html · Marcación</span>
+      </div>
+    </div>
+
+    <!-- Separador central (oculto en móvil via .paths-divider) -->
+    <div class="paths-divider" style="display:flex;flex-direction:column;align-items:center;padding:0 20px;padding-top:36px">
+      <div style="width:1px;height:100%;background:linear-gradient(to bottom,#E2E8F0 60%,transparent);min-height:180px;position:relative">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#F1F5F9;border:1px solid #E2E8F0;border-radius:100px;padding:4px 10px;white-space:nowrap;font-size:10px;font-weight:700;color:#94A3B8;letter-spacing:.3px">ó</div>
+      </div>
+    </div>
+
+    <!-- RUTA B: Biométrico ZKTeco -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+      <!-- "ó" visible solo en móvil entre las dos rutas -->
+      <div class="paths-or" style="display:none">— ó —</div>
+      <span class="step-lbl step-green">Ruta B · Biométrico ZKTeco</span>
+
+      <div class="fnode bio" style="width:100%">
+        <div class="fnode-icon">🖐️</div>
+        <div class="fnode-title">Colaborador marca con huella</div>
+        <div class="fnode-desc">El lector biométrico ZKTeco registra la huella dactilar. Al final del día, ZKTime exporta un reporte Excel con todos los registros.</div>
+        <span class="fnode-file">ZKTeco → ZKTime (.xlsx)</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;padding:8px 0">
+        <div style="width:2px;height:18px;background:#BBF7D0"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #86EFAC"></div>
+      </div>
+
+      <div class="fnode bio" style="width:100%">
+        <div class="fnode-icon">📥</div>
+        <div class="fnode-title">Importación del Excel</div>
+        <div class="fnode-desc">Se sube el Excel a la herramienta de importación. Detecta automáticamente la primera marcación como Entrada y la última como Salida.</div>
+        <span class="fnode-file">importar_biometrico.html</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flechas convergiendo hacia Firebase (escritorio) -->
+  <div class="merge-svg" style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;height:56px;margin-bottom:0">
+    <div style="position:relative">
+      <svg width="100%" height="56" viewBox="0 0 200 56" preserveAspectRatio="none">
+        <path d="M 100 0 L 100 28 L 200 28 L 200 56" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+        <polygon points="194,48 206,48 200,56" fill="#94A3B8"/>
+      </svg>
+    </div>
+    <div style="width:40px"></div>
+    <div style="position:relative">
+      <svg width="100%" height="56" viewBox="0 0 200 56" preserveAspectRatio="none">
+        <path d="M 100 0 L 100 28 L 0 28 L 0 56" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+        <polygon points="-6,48 6,48 0,56" fill="#94A3B8"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Flecha simple para móvil (oculta en escritorio) -->
+  <div class="merge-mobile" style="display:none;flex-direction:column;align-items:center;padding:10px 0">
+    <div style="width:2px;height:20px;background:#CBD5E1"></div>
+    <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #CBD5E1"></div>
+  </div>
+
+  <!-- ══ FIREBASE (centro) ══ -->
+  <div class="db-row">
+    <div class="db-box">
+      <div class="db-icon">🔥</div>
+      <div class="db-title">Firebase Firestore</div>
+      <div class="db-sub">Base de datos en la nube. Recibe y almacena todos los eventos de asistencia en tiempo real.</div>
+      <div class="db-collections">
+        <span class="db-col">usuarios (90)</span>
+        <span class="db-col">marcaciones (~400/día)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flecha desde Firebase hacia resultados -->
+  <div style="display:flex;flex-direction:column;align-items:center;margin:4px 0 12px">
+    <div style="width:2px;height:16px;background:#93C5FD"></div>
+    <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #60A5FA"></div>
+    <div style="font-size:10px;font-weight:700;color:#3B82F6;letter-spacing:.3px;margin-top:4px;text-transform:uppercase">Resultados</div>
+  </div>
+
+  <!-- ══ SALIDAS ══ -->
+  <div class="out-row">
+    <div class="fnode out">
+      <div class="fnode-icon">📊</div>
+      <div class="fnode-title">Dashboard en tiempo real</div>
+      <div class="fnode-desc">El supervisor ve el estado actual de cada colaborador: quién entró, quién tiene permiso, quién faltó.</div>
+      <span class="fnode-file">index.html · Dashboard</span>
+    </div>
+    <div class="fnode out">
+      <div class="fnode-icon">📤</div>
+      <div class="fnode-title">Exportación a Excel</div>
+      <div class="fnode-desc">El reporte del día se descarga en formato .xlsx listo para RRHH, planillas o auditoría.</div>
+      <span class="fnode-file">SheetJS → .xlsx</span>
+    </div>
+    <div class="fnode out">
+      <div class="fnode-icon">🌐</div>
+      <div class="fnode-title">Acceso desde cualquier lugar</div>
+      <div class="fnode-desc">La app está publicada en Vercel con HTTPS. Se accede desde el celular, tablet o PC sin instalar nada.</div>
+      <span class="fnode-file">Vercel · HTTPS</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- HERRAMIENTAS -->
+<div class="slbl">Herramientas utilizadas</div>
+<div class="three-grid" style="margin-bottom:28px">
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">🔥</div><div class="ic-name">Firebase Firestore</div></div>
+    <p>Base de datos NoSQL en la nube. Almacena usuarios y marcaciones. Se actualiza en tiempo real sin refrescar la página.</p>
+    <span class="ic-tag tag-free">Gratis · Spark Plan</span>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">▲</div><div class="ic-name">Vercel</div></div>
+    <p>Hosting del sitio web. Deploy automático al hacer cambios en GitHub. HTTPS incluido y acceso global desde cualquier red.</p>
+    <span class="ic-tag tag-free">Gratis</span>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">📊</div><div class="ic-name">SheetJS (xlsx)</div></div>
+    <p>Librería JavaScript para leer el Excel del biométrico ZKTime y generar los reportes descargables en formato .xlsx.</p>
+    <span class="ic-tag tag-cdn">CDN · Sin instalación</span>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">🖐️</div><div class="ic-name">ZKTeco / ZKTime</div></div>
+    <p>Lector biométrico de huella dactilar. ZKTime es el software que exporta el registro de accesos en Excel al final del día.</p>
+    <span class="ic-tag tag-ext">Hardware externo</span>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">🌐</div><div class="ic-name">HTML · CSS · JavaScript</div></div>
+    <p>La app completa es una sola página HTML. No requiere frameworks ni instalaciones. Funciona en cualquier navegador moderno.</p>
+    <span class="ic-tag tag-free">Sin dependencias</span>
+  </div>
+  <div class="info-card">
+    <div class="ic-head"><div class="ic-icon">🐙</div><div class="ic-name">GitHub</div></div>
+    <p>Control de versiones del código. El repositorio está conectado a Vercel para hacer deploy automático al guardar cambios.</p>
+    <span class="ic-tag tag-free">Gratis</span>
+  </div>
+</div>
+
+<!-- ARCHIVOS -->
+<div class="slbl">Archivos del proyecto</div>
+<div class="file-list">
+  <div class="file-item">
+    <div class="fi-icon">🏠</div>
+    <div>
+      <div class="fi-name">index.html</div>
+      <div class="fi-desc">Aplicación principal. Login, marcación de 27 tipos de eventos, dashboard en tiempo real, reloj y exportación de reportes.</div>
+      <div class="fi-tags"><span class="fi-tag">Admin</span><span class="fi-tag">Supervisor</span><span class="fi-tag">Asesor</span><span class="fi-tag">Uso diario</span></div>
+    </div>
+  </div>
+  <div class="file-item">
+    <div class="fi-icon">📥</div>
+    <div>
+      <div class="fi-name">importar_biometrico.html</div>
+      <div class="fi-desc">Lee el Excel del ZKTime y sube automáticamente las marcaciones a Firestore. Primera marca = Entrada, última = Salida.</div>
+      <div class="fi-tags"><span class="fi-tag">Admin</span><span class="fi-tag">Uso diario</span></div>
+    </div>
+  </div>
+  <div class="file-item">
+    <div class="fi-icon">👥</div>
+    <div>
+      <div class="fi-name">cargar_usuarios.html</div>
+      <div class="fi-desc">Cargó los 90 colaboradores a Firestore en el setup inicial. Solo se ejecuta una vez al crear el proyecto.</div>
+      <div class="fi-tags"><span class="fi-tag">Admin</span><span class="fi-tag">Solo setup</span></div>
+    </div>
+  </div>
+  <div class="file-item">
+    <div class="fi-icon">🛡️</div>
+    <div>
+      <div class="fi-name">actualizar_admins.html</div>
+      <div class="fi-desc">Herramienta de mantenimiento para gestionar roles y permisos de administradores en Firestore.</div>
+      <div class="fi-tags"><span class="fi-tag">Admin</span><span class="fi-tag">Mantenimiento</span></div>
+    </div>
+  </div>
+  <div class="file-item">
+    <div class="fi-icon">📖</div>
+    <div>
+      <div class="fi-name">SETUP.html</div>
+      <div class="fi-desc">Guía paso a paso para configurar Firebase desde cero: crear proyecto, activar Firestore y configurar reglas de seguridad.</div>
+      <div class="fi-tags"><span class="fi-tag">Admin</span><span class="fi-tag">Documentación</span></div>
+    </div>
+  </div>
+  <div class="file-item">
+    <div class="fi-icon">📄</div>
+    <div>
+      <div class="fi-name">usuarios_centix.json</div>
+      <div class="fi-desc">Lista de los 90 colaboradores con DNI, nombre, cargo, rol y supervisor asignado. Fue la fuente para la carga inicial.</div>
+      <div class="fi-tags"><span class="fi-tag">Datos</span><span class="fi-tag">Referencia</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTADOS -->
+<div class="slbl">Capacidad y resultados</div>
+<div class="stat-row">
+  <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-n">90</div><div class="stat-l">Colaboradores registrados en el sistema</div></div>
+  <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-n">27</div><div class="stat-l">Tipos de eventos registrables por día</div></div>
+  <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-n">~400</div><div class="stat-l">Marcaciones diarias estimadas</div></div>
+  <div class="stat-card"><div class="stat-icon">☁️</div><div class="stat-n">+20</div><div class="stat-u">años</div><div class="stat-l">De capacidad en el plan gratuito de Firebase</div></div>
+  <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-n">$0</div><div class="stat-l">Costo mensual total de infraestructura</div></div>
+</div>
+
+<!-- EVENTOS -->
+<div class="slbl">27 tipos de eventos registrables</div>
+<div class="ev-grid">
+  <div class="ev-chip"><div class="ev-dot" style="background:#16A34A"></div><span class="ev-lbl">🟢 Entrada</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#6B7280"></div><span class="ev-lbl">🔴 Salida</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#DC2626"></div><span class="ev-lbl">❌ Falta</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#EA580C"></div><span class="ev-lbl">⏱️ Tardanza</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#D97706"></div><span class="ev-lbl">🍽️ Refrigerio Inicio</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#D97706"></div><span class="ev-lbl">☕ Refrigerio Fin</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#7C3AED"></div><span class="ev-lbl">💬 Feedback</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#7C3AED"></div><span class="ev-lbl">👥 Feedback Grupal</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#7C3AED"></div><span class="ev-lbl">✅ Fin de Feedback</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#0891B2"></div><span class="ev-lbl">🩺 Permiso Tópico</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#2563EB"></div><span class="ev-lbl">📋 Permiso con Retorno</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#0891B2"></div><span class="ev-lbl">↩️ Retorno de Permiso</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#0284C7"></div><span class="ev-lbl">🏥 Descanso Médico</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#06B6D4"></div><span class="ev-lbl">🏖️ Desc. Feriado Laborado</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#B45309"></div><span class="ev-lbl">⚡ Comp. por HHEE</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#4F46E5"></div><span class="ev-lbl">📚 Cap. en Horario</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#4F46E5"></div><span class="ev-lbl">🎓 Cap. por RRHH</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#64748B"></div><span class="ev-lbl">⚙️ Incidencia Día Completo</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#F59E0B"></div><span class="ev-lbl">⚠️ Incidencia en Jornada</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#F59E0B"></div><span class="ev-lbl">🚨 Incidencia Inicio</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#D97706"></div><span class="ev-lbl">🏆 Premiación Día Completo</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#D97706"></div><span class="ev-lbl">🥇 Premiación Fin de Turno</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#DB2777"></div><span class="ev-lbl">⏰ Salida Medio Turno</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#DB2777"></div><span class="ev-lbl">📤 Salida por HHEE</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#DB2777"></div><span class="ev-lbl">📉 Salida con Descuento</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#DB2777"></div><span class="ev-lbl">🔄 Salida con Recupero</span></div>
+  <div class="ev-chip"><div class="ev-dot" style="background:#DB2777"></div><span class="ev-lbl">🎂 Salida Cumpleaños</span></div>
+</div>
+
+<div class="footer">
+  <strong>CAP CENTIX</strong> · Control de Asistencia Personal · Proyecto: <strong>centix-asistencia</strong> (Firebase)<br>
+  Infraestructura 100% gratuita · Sin costo operativo mensual · Desarrollado por Keila Castillo
+</div>
+
+</div>
+</body>
+</html>

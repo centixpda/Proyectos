@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Asistencia · Centix</title>
+<title>CAP CENTIX · Control de Asistencia Personal Centix</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root{
   --blue:#1B5EA8;--blue-dk:#0D2347;--blue-lt:#E8F0FB;--orange:#F07030;
@@ -23,7 +24,7 @@ input,select,textarea,button{font-family:var(--font)}
 .login-net{position:absolute;inset:0;opacity:.07;pointer-events:none}
 .login-card{background:#fff;border-radius:24px;padding:40px 34px;width:100%;max-width:400px;box-shadow:0 24px 80px rgba(0,0,0,.35);position:relative;z-index:1}
 .llogo{text-align:center;margin-bottom:26px}
-.llogo img{height:42px;object-fit:contain;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto}
+.llogo img{height:80px;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto}
 .llogo-text{font-size:26px;font-weight:800;color:var(--blue);letter-spacing:-1px}
 .llogo-text b{color:var(--orange)}
 .llogo-sub{font-size:11.5px;color:var(--g400);font-weight:600;background:var(--g100);padding:4px 12px;border-radius:100px;display:inline-block;margin-top:8px;letter-spacing:.5px}
@@ -41,7 +42,7 @@ input,select,textarea,button{font-family:var(--font)}
 /* NAV */
 .nav{background:var(--blue-dk);padding:0 18px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.35)}
 .nav-brand{display:flex;align-items:center;gap:10px}
-.nav-logo{height:30px;object-fit:contain}
+.nav-logo{height:30px;object-fit:contain;border-radius:6px}
 .nav-logo-text{font-size:19px;font-weight:800;letter-spacing:-1px;color:#fff}
 .nav-logo-text b{color:var(--orange)}
 .nav-sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
@@ -78,8 +79,8 @@ input,select,textarea,button{font-family:var(--font)}
 .sec-line::before{content:'';position:absolute;left:0;top:0;height:100%;width:48px;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--orange))}
 
 /* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:9px}
-.stat-card{background:#fff;border-radius:var(--r-sm);padding:13px;box-shadow:var(--sh-sm);text-align:center}
+.stats-row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.stat-card{background:#fff;border-radius:var(--r-sm);padding:13px 18px;box-shadow:var(--sh-sm);text-align:center;min-width:100px;flex:0 0 auto}
 .stat-n{font-size:26px;font-weight:800;color:var(--blue);line-height:1}
 .stat-l{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
 .sc-green .stat-n{color:var(--green)}.sc-red .stat-n{color:var(--red)}.sc-amber .stat-n{color:var(--amber)}.sc-gray .stat-n{color:var(--g400)}
@@ -155,6 +156,102 @@ input,select,textarea,button{font-family:var(--font)}
 .toast.ok{background:#15803D}.toast.err{background:#B91C1C}
 
 @media(max-width:480px){.nav-tabs,.nav-uname{display:none}.ev-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ══ MOBILE BOTTOM NAV ════════════════════════════════ */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#0D2347;border-top:1px solid rgba(255,255,255,.12);z-index:300;padding-bottom:env(safe-area-inset-bottom,0px)}
+.mob-nav .mntab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 11px;color:rgba(255,255,255,.45);background:transparent;border:none;font-size:10px;font-weight:600;letter-spacing:.2px;gap:4px;cursor:pointer;transition:color .2s;position:relative}
+.mob-nav .mntab .mn-ico{font-size:22px;line-height:1;transition:transform .2s}
+.mob-nav .mntab.active{color:#F07030}
+.mob-nav .mntab.active .mn-ico{transform:scale(1.15)}
+.mob-nav .mntab.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2.5px;background:#F07030;border-radius:0 0 3px 3px}
+
+/* ══ MOBILE OVERRIDES ════════════════════════════════= */
+@media(max-width:640px){
+  /* Body padding for bottom nav */
+  #pgApp .wrap{padding:0 14px 90px}
+
+  /* Compact nav */
+  .nav{height:50px;padding:0 14px}
+  .nav-tabs{display:none!important}
+  .nav-uname{display:none!important}
+  .nav-sep{display:none}
+  .btn-logout{padding:4px 10px;font-size:11px}
+
+  /* Compact hero */
+  .hero{padding:16px 16px 20px}
+  .hero-glow{display:none}
+  .hero-content>div:first-child{display:none!important} /* ocultar logos en hero */
+  .hero-welcome{font-size:12px;margin-bottom:1px}
+  .hero-name{font-size:16px;margin-bottom:4px}
+  .hero-clock{font-size:clamp(36px,10vw,48px)!important;margin-bottom:2px}
+  .hero-date{font-size:12px}
+
+  /* Show bottom nav */
+  .mob-nav{display:flex}
+
+  /* Stats: 3 columnas */
+  .stats-row{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat-card{min-width:auto;padding:10px 8px}
+  .stat-n{font-size:22px}
+  .stat-l{font-size:9px}
+
+  /* ── ENTRADA / SALIDA: botones hero ── */
+  /* Los 2 primeros botones del grid ocupan la fila completa y son grandes */
+  #evGrid,#evGridSup{grid-template-columns:1fr 1fr;gap:10px}
+  #evGrid .ev-btn:nth-child(1),#evGridSup .ev-btn:nth-child(1){
+    min-height:88px;border-radius:16px;
+    background:linear-gradient(135deg,#F0FDF4,#DCFCE7)!important;
+    border:2px solid #16A34A!important;
+    box-shadow:0 4px 14px rgba(22,163,74,.2)
+  }
+  #evGrid .ev-btn:nth-child(1) .ev-icon,#evGridSup .ev-btn:nth-child(1) .ev-icon{
+    width:48px;height:48px;font-size:24px;background:rgba(22,163,74,.15)!important
+  }
+  #evGrid .ev-btn:nth-child(1) .ev-label,#evGridSup .ev-btn:nth-child(1) .ev-label{
+    font-size:13px;font-weight:700;color:#15803D
+  }
+  #evGrid .ev-btn:nth-child(2),#evGridSup .ev-btn:nth-child(2){
+    min-height:88px;border-radius:16px;
+    background:linear-gradient(135deg,#FEF2F2,#FEE2E2)!important;
+    border:2px solid #DC2626!important;
+    box-shadow:0 4px 14px rgba(220,38,38,.2)
+  }
+  #evGrid .ev-btn:nth-child(2) .ev-icon,#evGridSup .ev-btn:nth-child(2) .ev-icon{
+    width:48px;height:48px;font-size:24px;background:rgba(220,38,38,.15)!important
+  }
+  #evGrid .ev-btn:nth-child(2) .ev-label,#evGridSup .ev-btn:nth-child(2) .ev-label{
+    font-size:13px;font-weight:700;color:#B91C1C
+  }
+
+  /* Falta (3er botón) también destacado */
+  #evGrid .ev-btn:nth-child(3),#evGridSup .ev-btn:nth-child(3){
+    min-height:72px;border-radius:14px
+  }
+
+  /* Resto de botones: más compactos */
+  #evGrid .ev-btn,#evGridSup .ev-btn{padding:10px 8px 8px}
+  #evGrid .ev-btn .ev-icon,#evGridSup .ev-btn .ev-icon{width:34px;height:34px;font-size:17px}
+  #evGrid .ev-btn .ev-label,#evGridSup .ev-btn .ev-label{font-size:10.5px}
+
+  /* Team table: ocultar columnas menos importantes */
+  .tbl th:nth-child(1),.tbl td:nth-child(1){display:none} /* DNI */
+  .tbl th:nth-child(5),.tbl td:nth-child(5){display:none} /* Eventos detalle */
+  .tbl{font-size:12px}
+  .tbl th,.tbl td{padding:8px 10px;white-space:nowrap}
+
+  /* User cards list */
+  .user-item{padding:10px 12px}
+  .uname{font-size:13px}
+  .umeta{font-size:11px}
+
+  /* Filters stack */
+  .fbar{flex-direction:column;gap:8px}
+  .fbar .finp,.fbar .fsel{width:100%}
+  .fbar .btn-pri{width:100%;text-align:center}
+
+  /* Modal bottom sheet */
+  .mc{padding:20px 18px 28px}
+}
 </style>
 </head>
 <body>
@@ -176,9 +273,12 @@ input,select,textarea,button{font-family:var(--font)}
   </svg>
   <div class="login-card">
     <div class="llogo">
-      <img src="./LOGO.png" alt="Centix" id="lLogo" onerror="this.style.display='none';document.getElementById('lLogoTxt').style.display='block'">
-      <div class="llogo-text" id="lLogoTxt" style="display:none">centi<b>x</b></div>
-      <div class="llogo-sub">Sistema de Asistencia</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px">
+        <img src="./LOGO.png" alt="Centix" style="height:52px;object-fit:contain" onerror="this.style.display='none'">
+        <div style="width:1.5px;height:44px;background:#E2E8F0;flex-shrink:0"></div>
+        <img src="./LOGO_ALTARA.png" alt="Altara" style="height:52px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
+      </div>
+      <div class="llogo-sub">Control de Asistencia Personal Centix</div>
     </div>
     <div class="login-title">Bienvenido</div>
     <div class="login-sub">Ingresa con tu DNI para continuar</div>
@@ -204,13 +304,14 @@ input,select,textarea,button{font-family:var(--font)}
       <img src="./LOGO.png" alt="Centix" class="nav-logo" id="nLogo" onerror="this.style.display='none';document.getElementById('nLogoTxt').style.display='block'">
       <div class="nav-logo-text" id="nLogoTxt" style="display:none">centi<b>x</b></div>
       <div class="nav-sep"></div>
-      <span class="nav-lbl">Asistencia</span>
+      <div style="display:flex;flex-direction:column;line-height:1.1"><span class="nav-lbl">CAP CENTIX</span><span style="font-size:8px;color:rgba(255,255,255,.35);font-weight:500;letter-spacing:.2px">Control de Asistencia Personal</span></div>
     </div>
     <div class="nav-tabs" id="navTabs" style="display:none">
       <button class="ntab active" data-tab="hoy">Hoy</button>
       <button class="ntab" data-tab="mis">Mis Eventos</button>
       <button class="ntab" data-tab="rep">Reportes</button>
       <button class="ntab" data-tab="users" id="ntabUsers" style="display:none">Usuarios</button>
+      <button class="ntab" data-tab="bio" id="ntabBio" style="display:none">Biométrico</button>
     </div>
     <div class="nav-right">
       <span class="nav-uname" id="navNombre"></span>
@@ -218,6 +319,14 @@ input,select,textarea,button{font-family:var(--font)}
       <button class="btn-logout" id="btnLogout">Salir</button>
     </div>
   </nav>
+
+  <!-- MOBILE BOTTOM NAV (solo visible en ≤640px) -->
+  <div class="mob-nav" id="mobBotNav">
+    <button class="mntab ntab active" data-tab="hoy"><span class="mn-ico">📋</span>Hoy</button>
+    <button class="mntab ntab" data-tab="mis"><span class="mn-ico">📅</span>Mis eventos</button>
+    <button class="mntab ntab" data-tab="rep"><span class="mn-ico">📊</span>Reportes</button>
+    <button class="mntab ntab" data-tab="users" id="mobTabUsers" style="display:none"><span class="mn-ico">👥</span>Usuarios</button>
+  </div>
 
   <header class="hero">
     <div class="hero-glow"></div>
@@ -228,6 +337,11 @@ input,select,textarea,button{font-family:var(--font)}
       </g>
     </svg>
     <div class="hero-content">
+      <div style="display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,0.95);border-radius:14px;padding:10px 22px;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,0.2)">
+        <img src="./LOGO.png" alt="Centix" style="height:42px;object-fit:contain" onerror="this.style.display='none'">
+        <div style="width:1.5px;height:36px;background:#E2E8F0;flex-shrink:0"></div>
+        <img src="./LOGO_ALTARA.png" alt="Altara" style="height:42px;object-fit:contain;border-radius:4px" onerror="this.style.display='none'">
+      </div>
       <div class="hero-welcome" id="hWelcome"></div>
       <div class="hero-name" id="hName"></div>
       <div class="hero-clock" id="hClock">--:--:--</div>
@@ -256,7 +370,14 @@ input,select,textarea,button{font-family:var(--font)}
       <!-- TAB HOY -->
       <div id="tHoy">
         <div class="sec">
-          <div class="sec-hdr"><span class="sec-title">Resumen del día</span><div class="sec-line"></div></div>
+          <div class="sec-hdr">
+            <span class="sec-title">Resumen del día</span>
+            <div class="sec-line"></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+              <button class="btn-sec" id="btnHoyFecha" style="font-size:12px;padding:5px 10px;white-space:nowrap">Hoy</button>
+              <input type="date" id="fechaHoy" class="finp" style="padding:5px 9px;font-size:12.5px;width:150px"/>
+            </div>
+          </div>
           <div id="supSelWrap" style="display:none;margin-bottom:12px">
             <select class="fsel" id="supSel" style="min-width:220px"><option value="">Todos los supervisores</option></select>
           </div>
@@ -301,7 +422,7 @@ input,select,textarea,button{font-family:var(--font)}
             <div><label class="flbl">Hasta</label><input class="finp" type="date" id="rHasta"/></div>
             <div id="rSupWrap" style="display:none"><label class="flbl">Supervisor</label><select class="fsel" id="rSupSel"><option value="">Todos</option></select></div>
             <div style="align-self:flex-end"><button class="btn-pri" id="btnGenRep">Generar →</button></div>
-            <div style="align-self:flex-end" class="ml"><button class="btn-sec" id="btnExpRep">↓ CSV</button></div>
+            <div style="align-self:flex-end" class="ml"><button class="btn-sec" id="btnExpRep">↓ Excel</button></div>
           </div>
           <div class="stabs">
             <button class="stab active" data-rt="asist">Asistencia</button>
@@ -315,7 +436,7 @@ input,select,textarea,button{font-family:var(--font)}
           </div>
           <div id="repAusent" style="display:none">
             <div class="tbl-wrap">
-              <table class="tbl"><thead><tr><th>Nombre</th><th>DNI</th><th>Faltas</th><th>Tardanzas</th><th>Perm. C/G</th><th>Perm. S/G</th><th>Desc. Méd.</th><th>Sal. Ant.</th><th>TOTAL</th></tr></thead>
+              <table class="tbl"><thead><tr><th>Nombre</th><th>DNI</th><th>Faltas</th><th>Tardanzas</th><th>Permisos</th><th>Desc. Méd.</th><th>Sal. Aut.</th><th>Incidencias</th><th>TOTAL</th></tr></thead>
               <tbody id="tAusent"><tr><td colspan="9" style="text-align:center;color:var(--g400);padding:22px">Selecciona fechas y genera el reporte</td></tr></tbody></table>
             </div>
           </div>
@@ -343,9 +464,76 @@ input,select,textarea,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- TAB BIOMÉTRICO (admin) -->
+      <div id="tBio" style="display:none">
+        <div class="sec">
+          <div class="sec-hdr"><span class="sec-title">Importar Asistencia · ZKTeco</span><div class="sec-line"></div></div>
+          <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 16px;font-size:13px;color:#1E40AF;margin-bottom:14px;line-height:1.75">
+            Carga el Excel exportado de <strong>ZKTime</strong>. La primera marcación del día se registra como <strong>Entrada</strong> y la última como <strong>Salida</strong>.
+            Las columnas requeridas son: <em>ID de Usuario · Nombre · Fecha · Tiempo · Nombre de la Terminal</em>.
+          </div>
+          <!-- Drop zone -->
+          <div id="bioDropZone" style="border:2.5px dashed var(--g200);border-radius:12px;padding:32px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--g50);margin-bottom:14px">
+            <div style="font-size:36px;margin-bottom:8px">📂</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px">Arrastra el archivo Excel aquí</div>
+            <div style="font-size:13px;color:var(--g400)">o haz clic para seleccionarlo (.xlsx / .xls)</div>
+            <input type="file" id="bioFileInput" accept=".xlsx,.xls" style="display:none"/>
+          </div>
+          <!-- Stats -->
+          <div id="bioStats" style="display:none">
+            <div class="stats-row" id="bioStatsRow" style="margin-bottom:14px"></div>
+            <div id="bioWarnNoMatch" style="display:none;background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#9A3412;margin-bottom:12px">
+              ⚠️ Algunos DNIs del Excel no están registrados en el sistema. Esas filas se omitirán.
+            </div>
+            <!-- Filtros -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:flex-end">
+              <div><label class="flbl">Estado</label>
+                <select class="fsel" id="bioFiltroE" onchange="bioPrevRender()">
+                  <option value="">Todos</option>
+                  <option value="ok">Para importar</option>
+                  <option value="dup">Ya existe</option>
+                  <option value="nouser">DNI no hallado</option>
+                </select>
+              </div>
+              <div><label class="flbl">Fecha</label>
+                <select class="fsel" id="bioFiltroF" onchange="bioPrevRender()"><option value="">Todas</option></select>
+              </div>
+              <div style="margin-left:auto;align-self:flex-end;display:flex;gap:8px">
+                <button class="btn-pri" id="bioBtnImport">Importar →</button>
+                <button class="btn-sec" id="bioBtnReset">Limpiar</button>
+              </div>
+            </div>
+            <!-- Tabla preview -->
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead><tr><th>DNI</th><th>Nombre</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Marcaciones</th><th>Terminal</th><th>Estado</th></tr></thead>
+                <tbody id="bioPrevTbl"></tbody>
+              </table>
+            </div>
+            <div id="bioLog" style="display:none;margin-top:12px;background:#1E293B;color:#E2E8F0;border-radius:10px;padding:12px 16px;font-size:12px;font-family:monospace;line-height:1.8;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
+            <div id="bioOkBox" style="display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:12px;padding:16px;text-align:center;margin-top:12px">
+              <div style="font-size:17px;font-weight:700;color:#15803D;margin-bottom:4px">✅ Importación completada</div>
+              <div id="bioOkMsg" style="font-size:13px;color:#166534"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div><!-- /pgApp -->
+
+<!-- Modal: Detalle de persona -->
+<div id="mDetalle" class="ov" style="display:none">
+  <div class="mc" style="max-width:500px;max-height:82vh;display:flex;flex-direction:column">
+    <div class="mc-title" id="mDTitle">Eventos del día</div>
+    <div id="mDSubtitle" style="font-size:12.5px;color:var(--g400);margin-bottom:14px;margin-top:-8px"></div>
+    <div id="mDList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px"></div>
+    <div class="mc-acts" style="margin-top:14px">
+      <button class="btn-ok" id="mDCer" style="flex:1">Cerrar</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal: Observación -->
 <div id="mObs" class="ov" style="display:none">
@@ -375,7 +563,7 @@ input,select,textarea,button{font-family:var(--font)}
         <option value="admin">Administrador</option>
       </select>
     </div>
-    <div class="mc-grp" id="uSupGrp"><label class="mc-lbl">Supervisor asignado</label>
+    <div class="mc-grp" id="uSupGrp"><label class="mc-lbl">Reporta a (supervisor/jefe)</label>
       <select class="mc-inp" id="uSupSel"><option value="">Sin supervisor</option></select>
     </div>
     <div class="mc-grp"><label class="mc-lbl">Contraseña <span style="color:var(--g400);font-weight:400">(vacío = DNI del usuario)</span></label>
@@ -404,17 +592,42 @@ const FB_CFG = {
 
 /* ══ EVENTOS ══════════════════════════════════════════ */
 const EVS=[
-  {id:"entrada",     label:"Entrada",            icon:"🟢",color:"#16A34A",obs:false},
-  {id:"salida",      label:"Salida",              icon:"🔴",color:"#6B7280",obs:false},
-  {id:"refrig_sal",  label:"Refrigerio\nSalida",  icon:"🍽️", color:"#D97706",obs:false},
-  {id:"refrig_ret",  label:"Refrigerio\nRetorno", icon:"↩️", color:"#D97706",obs:false},
-  {id:"perm_con",    label:"Permiso\nCon Goce",   icon:"📋",color:"#2563EB",obs:true},
-  {id:"perm_sin",    label:"Permiso\nSin Goce",   icon:"📄",color:"#7C3AED",obs:true},
-  {id:"perm_ret",    label:"Retorno\nPermiso",    icon:"🔄",color:"#0891B2",obs:false},
-  {id:"sal_anticip", label:"Salida\nAnticipada",  icon:"⏩",color:"#DB2777",obs:true},
-  {id:"tardanza",    label:"Tardanza",             icon:"⏱️", color:"#EA580C",obs:true},
-  {id:"falta",       label:"Falta",               icon:"❌",color:"#DC2626",obs:false},
-  {id:"desc_med",    label:"Descanso\nMédico",    icon:"🏥",color:"#0284C7",obs:true},
+  // Asistencia básica
+  {id:"entrada",      label:"Entrada",                                          icon:"🟢",color:"#16A34A",obs:false},
+  {id:"salida",       label:"Salida",                                           icon:"🔴",color:"#6B7280",obs:false},
+  {id:"falta",        label:"Falta",                                            icon:"❌",color:"#DC2626",obs:false},
+  {id:"tardanza",     label:"Tardanza",                                         icon:"⏱️",color:"#EA580C",obs:true},
+  // Refrigerio
+  {id:"refrig_ini",   label:"Refrigerio Inicio",                                icon:"🍽️",color:"#D97706",obs:false},
+  {id:"refrig_fin",   label:"Refrigerio Fin",                                   icon:"☕",color:"#D97706",obs:false},
+  // Feedback
+  {id:"feedback",     label:"Feedback",                                         icon:"💬",color:"#7C3AED",obs:true},
+  {id:"feedback_grp", label:"Feedback Grupal",                                  icon:"👥",color:"#7C3AED",obs:true},
+  {id:"fin_feedback", label:"Fin de Feedback",                                  icon:"✅",color:"#7C3AED",obs:false},
+  // Permisos
+  {id:"perm_topic",   label:"Permiso Tópico",                                   icon:"🩺",color:"#0891B2",obs:true},
+  {id:"perm_retorno", label:"Permiso con Retorno",                              icon:"📋",color:"#2563EB",obs:true},
+  {id:"ret_permiso",  label:"Retorno de Permiso",                               icon:"↩️",color:"#0891B2",obs:false},
+  // Descansos y beneficios
+  {id:"desc_med",     label:"Descanso Médico",                                  icon:"🏥",color:"#0284C7",obs:true},
+  {id:"desc_feriado", label:"Descanso por Feriado Laborado",                    icon:"🏖️",color:"#06B6D4",obs:false},
+  {id:"comp_hhee",    label:"Compensación por Horas Adicionales",               icon:"⚡",color:"#B45309",obs:true},
+  // Capacitación
+  {id:"cap_horario",  label:"Capacitación dentro de Horario",                   icon:"📚",color:"#4F46E5",obs:true},
+  {id:"cap_rrhh",     label:"Capacitación por RRHH",                            icon:"🎓",color:"#4F46E5",obs:true},
+  // Incidencias
+  {id:"inc_dia",      label:"Incidencia Día Completo",                          icon:"⚙️",color:"#64748B",obs:true},
+  {id:"inc_jornada",  label:"Incidencia dentro de Jornada",                     icon:"⚠️",color:"#F59E0B",obs:true},
+  {id:"inc_inicio",   label:"Incidencia Inicio de Jornada",                     icon:"🚨",color:"#F59E0B",obs:true},
+  // Premiaciones
+  {id:"prem_dia",     label:"Premiación Desempeño - Día Completo",              icon:"🏆",color:"#D97706",obs:false},
+  {id:"prem_fin",     label:"Premiación Desempeño - Fin de Turno",              icon:"🥇",color:"#D97706",obs:false},
+  // Salidas autorizadas
+  {id:"sal_medio",    label:"Salida Autorizada Medio Turno",                    icon:"⏰",color:"#DB2777",obs:true},
+  {id:"sal_hhee",     label:"Salida Autorizada antes de Fin de Turno por HHEE", icon:"📤",color:"#DB2777",obs:true},
+  {id:"sal_desc",     label:"Salida Autorizada con Descuento",                  icon:"📉",color:"#DB2777",obs:true},
+  {id:"sal_recup",    label:"Salida Autorizada con Recupero",                   icon:"🔄",color:"#DB2777",obs:true},
+  {id:"sal_cumple",   label:"Salida Autorizada Cumpleaños",                     icon:"🎂",color:"#DB2777",obs:false},
 ];
 const EVM=Object.fromEntries(EVS.map(e=>[e.id,e]));
 
@@ -482,13 +695,19 @@ function initApp(){
   $('hName').innerHTML=`${nom.split(' ').slice(0,2).join(' ')} <em>·</em> ${rlab[CU.rol]||CU.rol}`;
   if(CU.rol==='asesor'){
     $('navTabs').style.display='none';
+    $('mobBotNav').style.display='none';
     $('vAsesor').style.display='block';$('vSup').style.display='none';
     initAsesor();
   }else{
     $('navTabs').style.display='flex';
     $('vAsesor').style.display='none';$('vSup').style.display='block';
-    if(CU.rol==='admin'){$('ntabUsers').style.display='block';$('supSelWrap').style.display='block';$('rSupWrap').style.display='block';loadSupsSelects()}
-    else{loadHoy();}
+    initFechaHoy();
+    if(CU.rol==='admin'){
+      $('ntabUsers').style.display='block';$('ntabBio').style.display='block';
+      $('supSelWrap').style.display='block';$('rSupWrap').style.display='block';
+      $('mobTabUsers').style.display='flex';
+      loadSupsSelects();
+    }else{loadHoy();}
     setupTabNav();
     showTab('hoy');
     setupRep();
@@ -498,11 +717,12 @@ function initApp(){
 
 /* ══ TAB NAV ═════════════════════════════════════════ */
 function showTab(t){
-  const map={hoy:'tHoy',mis:'tMis',rep:'tRep',users:'tUsers'};
-  ['tHoy','tMis','tRep','tUsers'].forEach(id=>$(id).style.display='none');
+  const map={hoy:'tHoy',mis:'tMis',rep:'tRep',users:'tUsers',bio:'tBio'};
+  ['tHoy','tMis','tRep','tUsers','tBio'].forEach(id=>$(id).style.display='none');
   $(map[t]||'tHoy').style.display='block';
   document.querySelectorAll('.ntab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   if(t==='mis')initMisSup();
+  if(t==='bio')initBio();
 }
 function setupTabNav(){document.querySelectorAll('.ntab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)))}
 
@@ -535,52 +755,114 @@ function guardar(ev,obs){
 }
 
 /* ══ SUPERVISOR: HOY ═════════════════════════════════ */
-async function loadHoy(filtroSup=null){
+let fechaVista=hoy();
+async function loadHoy(filtroSup=null,fecha=null){
+  if(!fecha)fecha=fechaVista;
+  fechaVista=fecha;
+  if($('fechaHoy'))$('fechaHoy').value=fecha;
   const supDni=CU.rol==='supervisor'?CU.dni:filtroSup;
   try{
     let uSnap;
     if(supDni){
       uSnap=await db.collection('usuarios').where('supervisor_dni','==',supDni).get();
-    } else {
+    }else{
       uSnap=await db.collection('usuarios').get();
     }
-    // Mostrar todos los reportes directos (cualquier rol excepto el propio usuario)
-    const members=uSnap.docs.map(d=>d.data()).filter(u=>u.activo&&u.dni!==CU.dni&&(supDni?u.supervisor_dni===supDni:true));
+    const members=uSnap.docs.map(d=>d.data()).filter(u=>{
+      if(!u.activo)return false;
+      if(supDni)return u.supervisor_dni===supDni; // equipo específico: muestra a todos, incluyendo al logueado si reporta ahí
+      return u.dni!==CU.dni; // todos los equipos: excluye solo al logueado para evitar duplicado
+    });
     const dnis=members.map(u=>u.dni);
     if(!dnis.length){renderHoy([],[]);return;}
-
-    // Traer marcaciones de hoy en lotes de 30 (límite Firestore in)
     let marcas=[];
     for(let i=0;i<dnis.length;i+=30){
-      const mSnap=await db.collection('marcaciones').where('fecha','==',hoy()).where('dni','in',dnis.slice(i,i+30)).get();
+      const mSnap=await db.collection('marcaciones').where('fecha','==',fecha).where('dni','in',dnis.slice(i,i+30)).get();
       mSnap.forEach(d=>marcas.push(d.data()));
     }
     renderHoy(members,marcas);
   }catch(e){console.error(e);toast('Error cargando equipo','err')}
 }
+function openDetalle(u,ms){
+  if(!u)return;
+  $('mDTitle').textContent=u.nombre;
+  $('mDSubtitle').textContent=`DNI: ${u.dni} · Fecha: ${fechaVista}`;
+  if(!ms.length){
+    $('mDList').innerHTML='<div class="feed-empty">Sin eventos registrados este día.</div>';
+  }else{
+    const sorted=[...ms].sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+    $('mDList').innerHTML=sorted.map(r=>{
+      const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};
+      return`<div class="feed-item"><div style="font-size:24px;width:36px;text-align:center;flex-shrink:0">${ev.icon}</div><div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600;color:${ev.color}">${r.evento_label}</div>${r.observacion?`<div style="font-size:12px;color:var(--g400);margin-top:2px">"${r.observacion}"</div>`:''}</div><div style="font-size:13px;color:var(--g400);font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:8px">${r.hora||'--:--'}</div></div>`;
+    }).join('');
+  }
+  $('mDetalle').style.display='flex';
+}
+function initFechaHoy(){
+  const inp=$('fechaHoy');
+  const hd=hoy();
+  const d1m=new Date();d1m.setMonth(d1m.getMonth()-1);
+  const minFecha=`${d1m.getFullYear()}-${p2(d1m.getMonth()+1)}-${p2(d1m.getDate())}`;
+  inp.value=hd;inp.max=hd;
+  inp.addEventListener('change',()=>{
+    const sel=inp.value;if(!sel)return;
+    if(sel<minFecha){
+      toast('Para fechas de más de 1 mes descarga el reporte consolidado','err');
+      inp.value=fechaVista;
+      showTab('rep');return;
+    }
+    const filtroSup=CU.rol==='admin'?($('supSel').value||null):CU.dni;
+    loadHoy(filtroSup,sel);
+  });
+  $('btnHoyFecha').addEventListener('click',()=>{
+    inp.value=hoy();
+    const filtroSup=CU.rol==='admin'?($('supSel').value||null):CU.dni;
+    loadHoy(filtroSup,hoy());
+  });
+}
+$('mDCer').addEventListener('click',()=>$('mDetalle').style.display='none');
 function getStatus(ms){
   const ids=ms.map(m=>m.evento_id);
-  if(ids.includes('falta'))      return{label:'Falta',color:'#DC2626'};
-  if(ids.includes('perm_sin'))   return{label:'Perm. S/G',color:'#7C3AED'};
-  if(ids.includes('perm_con'))   return{label:'Perm. C/G',color:'#2563EB'};
-  if(ids.includes('desc_med'))   return{label:'Des. Médico',color:'#0284C7'};
+  if(ids.includes('falta'))                                          return{label:'Falta',color:'#DC2626'};
+  if(ids.includes('desc_med'))                                       return{label:'Desc. Médico',color:'#0284C7'};
+  if(ids.includes('inc_dia'))                                        return{label:'Incidencia',color:'#64748B'};
+  if(ids.includes('desc_feriado'))                                   return{label:'Feriado',color:'#06B6D4'};
+  if(ids.includes('perm_topic')||ids.includes('perm_retorno'))       return{label:'Permiso',color:'#2563EB'};
   if(ids.includes('entrada')){if(ids.includes('tardanza'))return{label:'Tardanza',color:'#EA580C'};return{label:'Presente',color:'#16A34A'}}
   return{label:'Sin marcar',color:'#94A3B8'};
 }
+let _teamMembers=[],_teamByDni={};
 function renderHoy(members,marcas){
-  const byDni={};marcas.forEach(m=>{if(!byDni[m.dni])byDni[m.dni]=[];byDni[m.dni].push(m)});
+  const byDni={};
+  marcas.forEach(m=>{if(!byDni[m.dni])byDni[m.dni]=[];byDni[m.dni].push(m)});
+  _teamMembers=members;_teamByDni=byDni;
   let pres=0,tard=0,aus=0,perm=0,sinm=0;
-  members.forEach(u=>{const ms=byDni[u.dni]||[],st=getStatus(ms);if(st.label==='Presente')pres++;else if(st.label==='Tardanza'){pres++;tard++}else if(st.label==='Falta')aus++;else if(['Perm. S/G','Perm. C/G','Des. Médico'].includes(st.label))perm++;else sinm++});
+  members.forEach(u=>{
+    const ms=byDni[u.dni]||[],st=getStatus(ms);
+    if(st.label==='Presente')pres++;
+    else if(st.label==='Tardanza'){pres++;tard++}
+    else if(st.label==='Falta')aus++;
+    else if(['Permiso','Desc. Médico','Incidencia','Feriado'].includes(st.label))perm++;
+    else sinm++;
+  });
   $('stTotal').textContent=members.length;$('stPres').textContent=pres;$('stTard').textContent=tard;$('stAus').textContent=aus;$('stPerm').textContent=perm;$('stSinM').textContent=sinm;
   const tb=$('teamTbl');
-  if(!members.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">No hay asesores asignados</td></tr>';return}
-  tb.innerHTML=members.sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(u=>{
+  if(!members.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">No hay personal asignado</td></tr>';return}
+  tb.innerHTML=members.sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')).map(u=>{
     const ms=byDni[u.dni]||[],st=getStatus(ms);
     const ent=ms.find(m=>m.evento_id==='entrada')?.hora||'—';
     const sal=ms.find(m=>m.evento_id==='salida')?.hora||'—';
-    const otros=ms.filter(m=>m.evento_id!=='entrada'&&m.evento_id!=='salida').map(m=>{const ev=EVM[m.evento_id]||{icon:'⦿',color:'#94A3B8'};return`<span class="badge" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${m.hora}</span>`}).join(' ')||'—';
-    return`<tr><td style="color:var(--g400)">${u.dni}</td><td style="font-weight:600">${u.nombre}</td><td style="font-variant-numeric:tabular-nums">${ent}</td><td style="font-variant-numeric:tabular-nums">${sal}</td><td>${otros}</td><td><span class="badge" style="background:${st.color}20;color:${st.color}">${st.label}</span></td></tr>`;
+    const iconos=ms.length
+      ?ms.sort((a,b)=>(a.hora||'').localeCompare(b.hora||'')).map(m=>{const ev=EVM[m.evento_id]||{icon:'⦿'};return`<span title="${m.hora} · ${m.evento_label}" style="font-size:18px;cursor:default">${ev.icon}</span>`;}).join('')
+      :'<span style="color:var(--g400);font-size:12px">—</span>';
+    return`<tr style="cursor:pointer" data-dni="${u.dni}"><td style="color:var(--g400)">${u.dni}</td><td style="font-weight:600">${u.nombre}</td><td style="font-variant-numeric:tabular-nums">${ent}</td><td style="font-variant-numeric:tabular-nums">${sal}</td><td style="font-size:17px;letter-spacing:1px">${iconos}</td><td><span class="badge" style="background:${st.color}20;color:${st.color}">${st.label}</span></td></tr>`;
   }).join('');
+  $('teamTbl').querySelectorAll('tr[data-dni]').forEach(tr=>{
+    tr.addEventListener('click',()=>{
+      const u=_teamMembers.find(x=>x.dni===tr.dataset.dni);
+      openDetalle(u,_teamByDni[tr.dataset.dni]||[]);
+    });
+  });
 }
 async function loadSupsSelects(){
   try{
@@ -589,12 +871,17 @@ async function loadSupsSelects(){
     const sups=todos
       .filter(u=>u.activo&&u.nombre&&u.dni&&(u.rol==='supervisor'||u.rol==='admin'))
       .sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
-    const nom2=s=>(s.nombre||s.dni||'').split(' ').slice(0,2).join(' ');
+    // Garantiza que el usuario logueado siempre aparezca aunque su registro esté incompleto
+    if(CU.nombre&&!sups.find(s=>s.dni===CU.dni)){
+      sups.push({dni:CU.dni,nombre:CU.nombre,rol:CU.rol,supervisor_dni:CU.supervisor_dni||''});
+      sups.sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
+    }
+    const nom2=s=>s.nombre||s.dni||'';
     const mkOpt=(s,sel)=>`<option value="${s.dni}"${sel?' selected':''}>${nom2(s)}</option>`;
     $('supSel').innerHTML='<option value="">— Todos los equipos —</option>'+sups.map(s=>mkOpt(s,s.dni===CU.dni)).join('');
-    $('supSel').addEventListener('change',()=>loadHoy($('supSel').value||null));
+    $('supSel').addEventListener('change',()=>loadHoy($('supSel').value||null,fechaVista));
     $('rSupSel').innerHTML='<option value="">Todos</option>'+sups.map(s=>mkOpt(s,false)).join('');
-    loadHoy(CU.dni);
+    loadHoy(CU.dni,hoy());
   }catch(e){console.error('loadSupsSelects',e);toast('Error cargando supervisores','err')}
 }
 
@@ -659,13 +946,23 @@ function renderAusent(){
   const tb=$('tAusent');
   if(!repData.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--g400);padding:22px">Sin datos</td></tr>';return}
   const ba={};
-  repData.forEach(d=>{if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pc:0,ps:0,dm:0,sa:0};const a=ba[d.dni];if(d.evento_id==='falta')a.f++;else if(d.evento_id==='tardanza')a.t++;else if(d.evento_id==='perm_con')a.pc++;else if(d.evento_id==='perm_sin')a.ps++;else if(d.evento_id==='desc_med')a.dm++;else if(d.evento_id==='sal_anticip')a.sa++});
+  repData.forEach(d=>{
+    if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pm:0,dm:0,sa:0,inc:0};
+    const a=ba[d.dni];
+    if(d.evento_id==='falta')a.f++;
+    else if(d.evento_id==='tardanza')a.t++;
+    else if(['perm_topic','perm_retorno'].includes(d.evento_id))a.pm++;
+    else if(d.evento_id==='desc_med')a.dm++;
+    else if(['sal_medio','sal_hhee','sal_desc','sal_recup'].includes(d.evento_id))a.sa++;
+    else if(['inc_dia','fin_inc','inc_jornada','inc_inicio'].includes(d.evento_id))a.inc++;
+  });
   const rows=Object.values(ba).sort((a,b)=>a.nombre.localeCompare(b.nombre));
   const rd=v=>v>0?`<span style="color:#DC2626;font-weight:700">${v}</span>`:0;
-  tb.innerHTML=rows.map(r=>{const tot=r.f+r.t+r.pc+r.ps+r.dm+r.sa;return`<tr><td style="font-weight:600">${r.nombre}</td><td style="color:var(--g400)">${r.dni}</td><td style="text-align:center">${rd(r.f)}</td><td style="text-align:center">${rd(r.t)}</td><td style="text-align:center">${r.pc}</td><td style="text-align:center">${r.ps}</td><td style="text-align:center">${r.dm}</td><td style="text-align:center">${r.sa}</td><td style="text-align:center;font-weight:700;color:${tot>0?'#EA580C':'#16A34A'}">${tot}</td></tr>`}).join('');
-  const tot={f:0,t:0,pc:0,ps:0,dm:0,sa:0};rows.forEach(r=>{tot.f+=r.f;tot.t+=r.t;tot.pc+=r.pc;tot.ps+=r.ps;tot.dm+=r.dm;tot.sa+=r.sa});
-  const tt=tot.f+tot.t+tot.pc+tot.ps+tot.dm+tot.sa;
-  tb.innerHTML+=`<tr style="background:#F0F4FF"><td colspan="2" style="font-weight:700">TOTALES</td><td style="text-align:center;font-weight:700;color:#DC2626">${tot.f}</td><td style="text-align:center;font-weight:700;color:#DC2626">${tot.t}</td><td style="text-align:center;font-weight:700">${tot.pc}</td><td style="text-align:center;font-weight:700">${tot.ps}</td><td style="text-align:center;font-weight:700">${tot.dm}</td><td style="text-align:center;font-weight:700">${tot.sa}</td><td style="text-align:center;font-weight:700;color:#EA580C">${tt}</td></tr>`;
+  tb.innerHTML=rows.map(r=>{const tot=r.f+r.t+r.pm+r.dm+r.sa+r.inc;return`<tr><td style="font-weight:600">${r.nombre}</td><td style="color:var(--g400)">${r.dni}</td><td style="text-align:center">${rd(r.f)}</td><td style="text-align:center">${rd(r.t)}</td><td style="text-align:center">${r.pm}</td><td style="text-align:center">${r.dm}</td><td style="text-align:center">${r.sa}</td><td style="text-align:center">${r.inc}</td><td style="text-align:center;font-weight:700;color:${tot>0?'#EA580C':'#16A34A'}">${tot}</td></tr>`}).join('');
+  const tot={f:0,t:0,pm:0,dm:0,sa:0,inc:0};
+  rows.forEach(r=>{tot.f+=r.f;tot.t+=r.t;tot.pm+=r.pm;tot.dm+=r.dm;tot.sa+=r.sa;tot.inc+=r.inc});
+  const tt=tot.f+tot.t+tot.pm+tot.dm+tot.sa+tot.inc;
+  tb.innerHTML+=`<tr style="background:#F0F4FF"><td colspan="2" style="font-weight:700">TOTALES</td><td style="text-align:center;font-weight:700;color:#DC2626">${tot.f}</td><td style="text-align:center;font-weight:700;color:#DC2626">${tot.t}</td><td style="text-align:center;font-weight:700">${tot.pm}</td><td style="text-align:center;font-weight:700">${tot.dm}</td><td style="text-align:center;font-weight:700">${tot.sa}</td><td style="text-align:center;font-weight:700">${tot.inc}</td><td style="text-align:center;font-weight:700;color:#EA580C">${tt}</td></tr>`;
 }
 function expRep(){
   if(!repData.length){toast('Genera un reporte primero','err');return}
@@ -675,16 +972,17 @@ function expRep(){
     const g={};repData.forEach(d=>{const k=`${d.dni}_${d.fecha}`;if(!g[k])g[k]={nombre:d.nombre,dni:d.dni,fecha:d.fecha,ent:'',sal:'',otros:[]};if(d.evento_id==='entrada')g[k].ent=d.hora;else if(d.evento_id==='salida')g[k].sal=d.hora;else g[k].otros.push(`${d.evento_label} ${d.hora}`)});
     Object.values(g).forEach(r=>rows.push([r.nombre,r.dni,r.fecha,r.ent||'',r.sal||'',r.otros.join(' | ')]));
   }else{
-    rows=[['Nombre','DNI','Faltas','Tardanzas','Perm C/G','Perm S/G','Desc Med','Sal Ant','Total']];
-    const ba={};repData.forEach(d=>{if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pc:0,ps:0,dm:0,sa:0};const a=ba[d.dni];if(d.evento_id==='falta')a.f++;else if(d.evento_id==='tardanza')a.t++;else if(d.evento_id==='perm_con')a.pc++;else if(d.evento_id==='perm_sin')a.ps++;else if(d.evento_id==='desc_med')a.dm++;else if(d.evento_id==='sal_anticip')a.sa++});
-    Object.values(ba).forEach(r=>rows.push([r.nombre,r.dni,r.f,r.t,r.pc,r.ps,r.dm,r.sa,r.f+r.t+r.pc+r.ps+r.dm+r.sa]));
+    rows=[['Nombre','DNI','Faltas','Tardanzas','Permisos','Desc Med','Sal Aut','Incidencias','Total']];
+    const ba={};repData.forEach(d=>{if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pm:0,dm:0,sa:0,inc:0};const a=ba[d.dni];if(d.evento_id==='falta')a.f++;else if(d.evento_id==='tardanza')a.t++;else if(['perm_topic','perm_retorno'].includes(d.evento_id))a.pm++;else if(d.evento_id==='desc_med')a.dm++;else if(['sal_medio','sal_hhee','sal_desc','sal_recup'].includes(d.evento_id))a.sa++;else if(['inc_dia','fin_inc','inc_jornada','inc_inicio'].includes(d.evento_id))a.inc++});
+    Object.values(ba).forEach(r=>rows.push([r.nombre,r.dni,r.f,r.t,r.pm,r.dm,r.sa,r.inc,r.f+r.t+r.pm+r.dm+r.sa+r.inc]));
   }
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=Object.assign(document.createElement('a'),{href:url,download:`centix_${repTab}_${$('rDesde').value}_${$('rHasta').value}.csv`});
-  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  toast('CSV exportado','ok');
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  // Ancho de columnas automático
+  ws['!cols']=rows[0].map((_,i)=>({wch:Math.max(...rows.map(r=>String(r[i]||'').length),10)}));
+  XLSX.utils.book_append_sheet(wb,ws,repTab==='asist'?'Asistencia':'Ausentismo');
+  XLSX.writeFile(wb,`CAP_CENTIX_${repTab}_${$('rDesde').value}_${$('rHasta').value}.xlsx`);
+  toast('Excel exportado','ok');
 }
 
 /* ══ ADMIN: USUARIOS ═════════════════════════════════ */
@@ -693,7 +991,7 @@ function setupUsers(){
   $('btnAddUser').addEventListener('click',()=>openUM(null));
   $('mUserCan').addEventListener('click',()=>$('mUser').style.display='none');
   $('mUserOk').addEventListener('click',saveUser);
-  $('uRol').addEventListener('change',()=>$('uSupGrp').style.display=$('uRol').value==='asesor'?'block':'none');
+  $('uRol').addEventListener('change',()=>{$('uSupGrp').style.display='block'});
   $('uSearch').addEventListener('input',filterUsers);
   $('uRolF').addEventListener('change',filterUsers);
   loadUsers();
@@ -723,7 +1021,7 @@ function openUM(dni){
   editDni=dni;$('mUserTitle').textContent=dni?'Editar Usuario':'Nuevo Usuario';
   if(dni){const u=allUsers.find(x=>x.dni===dni)||{};$('uDni').value=u.dni||'';$('uDni').disabled=true;$('uNombre').value=u.nombre||'';$('uRol').value=u.rol||'asesor';$('uSupSel').value=u.supervisor_dni||'';$('uPass').value='';$('uPass').placeholder='Vacío para no cambiar'}
   else{$('uDni').value='';$('uDni').disabled=false;$('uNombre').value='';$('uRol').value='asesor';$('uSupSel').value='';$('uPass').value='';$('uPass').placeholder='Vacío = DNI del usuario'}
-  $('uSupGrp').style.display=$('uRol').value==='asesor'?'block':'none';
+  $('uSupGrp').style.display='block';
   $('mUser').style.display='flex';
 }
 async function saveUser(){
@@ -738,6 +1036,128 @@ async function saveUser(){
 async function toggleActivo(dni,activo){
   try{await db.collection('usuarios').doc(dni).update({activo:!activo});toast(`Usuario ${activo?'desactivado':'activado'}`,'ok');loadUsers()}
   catch(e){toast('Error','err')}
+}
+
+/* ══ BIOMÉTRICO ZKTECO ═══════════════════════════════ */
+const MESES_ZK={ene:'01',feb:'02',mar:'03',abr:'04',may:'05',jun:'06',jul:'07',ago:'08',set:'09',sep:'09',oct:'10',nov:'11',dic:'12'};
+function zkParseFecha(raw){
+  if(typeof raw==='number'){const d=new Date(Math.round((raw-25569)*86400*1000));return`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;}
+  const s=String(raw||'').trim();
+  const m1=s.match(/^(\d{1,2})-([A-Za-záéíóú\.]+)-(\d{4})$/);
+  if(m1){const mes=m1[2].replace('.','').toLowerCase();return`${m1[3]}-${MESES_ZK[mes]||'01'}-${m1[1].padStart(2,'0')}`;}
+  const m2=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m2)return`${m2[3]}-${m2[2].padStart(2,'0')}-${m2[1].padStart(2,'0')}`;
+  if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;
+  return null;
+}
+function zkParseHora(raw){const s=String(raw||'').trim();const m=s.match(/^(\d{1,2}):(\d{2})/);return m?`${m[1].padStart(2,'0')}:${m[2]}`:null;}
+
+let bioRecs=[],bioUsuDB={},bioExist=new Set(),bioInited=false;
+
+function initBio(){
+  if(bioInited)return;bioInited=true;
+  const dz=$('bioDropZone'),fi=$('bioFileInput');
+  dz.addEventListener('click',()=>fi.click());
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='var(--blue)';dz.style.background='var(--blue-lt)'});
+  dz.addEventListener('dragleave',()=>{dz.style.borderColor='var(--g200)';dz.style.background='var(--g50)'});
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='var(--g200)';dz.style.background='var(--g50)';bioHandleFile(e.dataTransfer.files[0])});
+  fi.addEventListener('change',()=>bioHandleFile(fi.files[0]));
+  $('bioBtnImport').addEventListener('click',bioImportar);
+  $('bioBtnReset').addEventListener('click',()=>{bioRecs=[];bioInited=false;$('bioStats').style.display='none';$('bioOkBox').style.display='none';$('bioLog').style.display='none';fi.value='';dz.querySelector('div:nth-child(2)').textContent='Arrastra el archivo Excel aquí';initBio();});
+}
+
+async function bioHandleFile(file){
+  if(!file)return;
+  $('bioDropZone').querySelector('div:nth-child(2)').textContent='Analizando…';
+  // Cargar usuarios
+  const uSnap=await db.collection('usuarios').get();
+  bioUsuDB={};uSnap.forEach(d=>{const u=d.data();if(u.dni)bioUsuDB[u.dni]=u;});
+  // Leer Excel
+  const buf=await file.arrayBuffer();
+  const wb=XLSX.read(buf,{type:'array',cellDates:false});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  // Detectar cabecera
+  let hRow=-1;
+  for(let i=0;i<Math.min(10,rows.length);i++){const r=rows[i].map(c=>String(c).toLowerCase());if(r.some(c=>c.includes('id')||c.includes('usuario'))){hRow=i;break;}}
+  if(hRow<0){toast('No se encontró la cabecera del archivo','err');return;}
+  const heads=rows[hRow].map(c=>String(c).toLowerCase().trim());
+  const ci={dni:heads.findIndex(h=>h.includes('id')||h.includes('usuario')),nombre:heads.findIndex(h=>h.includes('nombre')),fecha:heads.findIndex(h=>h.includes('fecha')),hora:heads.findIndex(h=>h.includes('tiempo')||h.includes('hora')),term:heads.findIndex(h=>h.includes('terminal')||h.includes('punto')||h.includes('dispositivo'))};
+  // Agrupar por dni+fecha
+  const grupos={};
+  for(let i=hRow+1;i<rows.length;i++){
+    const r=rows[i];
+    const dni=String(r[ci.dni]||'').trim();
+    const fecha=zkParseFecha(r[ci.fecha]);
+    const hora=zkParseHora(r[ci.hora]);
+    const nombre=String(r[ci.nombre]||'').trim();
+    const term=String(r[ci.term>=0?ci.term:0]||'').trim();
+    if(!dni||!fecha||!hora)continue;
+    const key=`${dni}_${fecha}`;
+    if(!grupos[key])grupos[key]={dni,nombre,fecha,horas:[],terminales:[]};
+    if(!grupos[key].horas.includes(hora))grupos[key].horas.push(hora);
+    if(term&&!grupos[key].terminales.includes(term))grupos[key].terminales.push(term);
+  }
+  // Verificar duplicados en Firebase
+  const fechas=[...new Set(Object.values(grupos).map(g=>g.fecha))];
+  bioExist=new Set();
+  for(let i=0;i<fechas.length;i+=10){
+    const lote=fechas.slice(i,i+10);
+    const mSnap=await db.collection('marcaciones').where('fecha','in',lote).get();
+    mSnap.forEach(d=>{const m=d.data();bioExist.add(`${m.dni}_${m.fecha}_${m.hora}_${m.evento_id}`);});
+  }
+  // Construir registros
+  bioRecs=Object.values(grupos).map(g=>{
+    g.horas.sort();
+    const entrada=g.horas[0],salida=g.horas.length>1?g.horas[g.horas.length-1]:null;
+    const uDB=bioUsuDB[g.dni];
+    let estado='ok';
+    if(!uDB)estado='nouser';
+    else if(bioExist.has(`${g.dni}_${g.fecha}_${entrada}_entrada`)&&(!salida||bioExist.has(`${g.dni}_${g.fecha}_${salida}_salida`)))estado='dup';
+    return{...g,entrada,salida,uDB,estado};
+  });
+  // Filtro fechas
+  $('bioFiltroF').innerHTML='<option value="">Todas</option>'+[...new Set(bioRecs.map(r=>r.fecha))].sort().map(f=>`<option value="${f}">${f}</option>`).join('');
+  $('bioStats').style.display='block';
+  bioPrevRender();
+  $('bioDropZone').querySelector('div:nth-child(2)').textContent=file.name+' cargado';
+}
+
+function bioPrevRender(){
+  const fe=$('bioFiltroE').value,ff=$('bioFiltroF').value;
+  const fil=bioRecs.filter(r=>(!fe||r.estado===fe)&&(!ff||r.fecha===ff));
+  const tot=bioRecs.length,ok=bioRecs.filter(r=>r.estado==='ok').length,dup=bioRecs.filter(r=>r.estado==='dup').length,nu=bioRecs.filter(r=>r.estado==='nouser').length;
+  $('bioStatsRow').innerHTML=`<div class="stat-card"><div class="stat-n">${tot}</div><div class="stat-l">Total</div></div><div class="stat-card sc-green"><div class="stat-n">${ok}</div><div class="stat-l">Para importar</div></div><div class="stat-card sc-gray"><div class="stat-n">${dup}</div><div class="stat-l">Ya existen</div></div><div class="stat-card sc-red"><div class="stat-n">${nu}</div><div class="stat-l">Sin usuario</div></div>`;
+  $('bioWarnNoMatch').style.display=nu?'block':'none';
+  const badges={ok:'<span class="badge" style="background:#DCFCE7;color:#15803D">✓ Listo</span>',dup:'<span class="badge" style="background:#F1F5F9;color:#475569">Ya existe</span>',nouser:'<span class="badge" style="background:#FEE2E2;color:#DC2626">Sin usuario</span>'};
+  $('bioPrevTbl').innerHTML=fil.sort((a,b)=>a.fecha.localeCompare(b.fecha)||((a.uDB?.nombre||a.nombre).localeCompare(b.uDB?.nombre||b.nombre))).map(r=>`<tr><td style="color:var(--g400);font-size:11.5px">${r.dni}</td><td style="font-weight:600">${r.uDB?.nombre||r.nombre||'—'}</td><td>${r.fecha}</td><td><span class="badge" style="background:#DCFCE7;color:#15803D">🟢 ${r.entrada}</span></td><td>${r.salida?`<span class="badge" style="background:#F1F5F9;color:#475569">🔴 ${r.salida}</span>`:'<span class="badge" style="background:#FEF3C7;color:#D97706">Solo entrada</span>'}</td><td style="font-size:11.5px;color:var(--g400)">${r.horas.length} marcación${r.horas.length!==1?'es':''}</td><td style="font-size:11px;color:var(--g400)">${r.terminales.join(', ')||'—'}</td><td>${badges[r.estado]||''}</td></tr>`).join('');
+}
+
+async function bioImportar(){
+  const pendientes=bioRecs.filter(r=>r.estado==='ok');
+  if(!pendientes.length){toast('No hay registros nuevos para importar','err');return;}
+  $('bioBtnImport').disabled=true;$('bioBtnImport').textContent='Importando…';
+  const logEl=$('bioLog');logEl.style.display='block';logEl.textContent='';
+  const bioLog=m=>{logEl.textContent+=m+'\n';logEl.scrollTop=logEl.scrollHeight;};
+  bioLog(`Importando ${pendientes.length} registros...\n`);
+  let ok=0,err=0;
+  for(const r of pendientes){
+    const u=r.uDB;
+    const batch=db.batch();
+    if(!bioExist.has(`${r.dni}_${r.fecha}_${r.entrada}_entrada`)){
+      batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    if(r.salida&&!bioExist.has(`${r.dni}_${r.fecha}_${r.salida}_salida`)){
+      batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    try{await batch.commit();ok++;bioLog(`✅ ${u.nombre} · ${r.fecha} · E:${r.entrada}${r.salida?' S:'+r.salida:''}`)}
+    catch(e){err++;bioLog(`❌ ${r.dni}: ${e.message}`)}
+  }
+  bioLog(`\n${ok} importados · ${err} errores.`);
+  $('bioOkMsg').textContent=`${ok} personas importadas. Las marcaciones ya aparecen en la vista Hoy.`;
+  $('bioOkBox').style.display='block';
+  $('bioBtnImport').textContent='✓ Completado';
+  toast(`${ok} marcaciones importadas desde ZKTeco`,'ok');
 }
 
 /* ══ ARRANQUE ════════════════════════════════════════ */
