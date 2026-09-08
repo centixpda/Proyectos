@@ -181,7 +181,8 @@ function $(id){return document.getElementById(id)}
 /* ── Globals ───────────────────────────────────────── */
 let registros=[];      // filas procesadas por persona+día
 let usuariosDB={};     // dni → {nombre, supervisor_dni, rol}
-let marcacionesExist=new Set(); // "dni_fecha_hora" ya en Firebase
+let marcacionesExist=new Set();
+let marcacionesIds={}; // dni_fecha_evento_id → docId (para borrar en Opción B)
 
 async function handleFile(file){
   if(!file)return;
@@ -233,10 +234,18 @@ async function handleFile(file){
   // Verificar marcaciones existentes para evitar duplicados
   const fechasUnicas=[...new Set(Object.values(grupos).map(g=>g.fecha))];
   marcacionesExist=new Set();
+  marcacionesIds={};
   for(let i=0;i<fechasUnicas.length;i+=10){
     const lote=fechasUnicas.slice(i,i+10);
     const mSnap=await db.collection('marcaciones').where('fecha','in',lote).get();
-    mSnap.forEach(d=>{const m=d.data();marcacionesExist.add(`${m.dni}_${m.fecha}_${m.hora}_${m.evento_id}`)});
+    mSnap.forEach(d=>{
+      const m=d.data();
+      marcacionesExist.add(`${m.dni}_${m.fecha}_${m.hora}_${m.evento_id}`);
+      // Guardar ID para poder borrar entrada/salida si el biométrico las reemplaza
+      if(m.evento_id==='entrada'||m.evento_id==='salida'){
+        marcacionesIds[`${m.dni}_${m.fecha}_${m.evento_id}`]=d.id;
+      }
+    });
   }
 
   // Construir registros con estado
@@ -248,6 +257,7 @@ async function handleFile(file){
     let estado='ok';
     if(!uDB)estado='nouser';
     else{
+      // Dup: la hora de entrada Y la hora de salida coinciden exactamente con lo que ya está en Firebase
       const dupE=marcacionesExist.has(`${g.dni}_${g.fecha}_${entrada}_entrada`);
       const dupS=salida&&marcacionesExist.has(`${g.dni}_${g.fecha}_${salida}_salida`);
       if(dupE&&(!salida||dupS))estado='dup';
@@ -309,17 +319,22 @@ $('btnImport').addEventListener('click',async function(){
   for(const r of pendientes){
     const u=r.uDB;
     const batch=db.batch();
-    // Entrada
-    if(!marcacionesExist.has(`${r.dni}_${r.fecha}_${r.entrada}_entrada`)){
-      const ref=db.collection('marcaciones').doc();
-      batch.set(ref,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+
+    // Opción B: biométrico siempre reemplaza entrada/salida existentes
+    // Borrar entrada previa si existe (cualquier hora) y guardar la del biométrico
+    const idEntExist=marcacionesIds[`${r.dni}_${r.fecha}_entrada`];
+    if(idEntExist) batch.delete(db.collection('marcaciones').doc(idEntExist));
+    const refE=db.collection('marcaciones').doc();
+    batch.set(refE,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+
+    // Borrar salida previa si existe y guardar la nueva (solo si biométrico tiene salida)
+    const idSalExist=marcacionesIds[`${r.dni}_${r.fecha}_salida`];
+    if(idSalExist) batch.delete(db.collection('marcaciones').doc(idSalExist));
+    if(r.salida){
+      const refS=db.collection('marcaciones').doc();
+      batch.set(refS,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     }
-    // Salida
-    if(r.salida&&!marcacionesExist.has(`${r.dni}_${r.fecha}_${r.salida}_salida`)){
-      const ref=db.collection('marcaciones').doc();
-      batch.set(ref,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    }
-    try{await batch.commit();ok++;log(`✅ ${u.nombre} · ${r.fecha} · E:${r.entrada}${r.salida?' S:'+r.salida:''}`)}
+    try{await batch.commit();ok++;log(`✅ ${u.nombre} · ${r.fecha} · E:${r.entrada}${r.salida?' S:'+r.salida:' (sin salida aún)'}`)}
     catch(e){err++;log(`❌ ERROR ${r.dni}: ${e.message}`)}
   }
 
