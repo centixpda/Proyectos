@@ -241,9 +241,11 @@ async function handleFile(file){
     mSnap.forEach(d=>{
       const m=d.data();
       marcacionesExist.add(`${m.dni}_${m.fecha}_${m.hora}_${m.evento_id}`);
-      // Guardar ID para poder borrar entrada/salida si el biométrico las reemplaza
+      // Guardar TODOS los IDs de entrada/salida (puede haber duplicados)
       if(m.evento_id==='entrada'||m.evento_id==='salida'){
-        marcacionesIds[`${m.dni}_${m.fecha}_${m.evento_id}`]=d.id;
+        const k=`${m.dni}_${m.fecha}_${m.evento_id}`;
+        if(!marcacionesIds[k])marcacionesIds[k]=[];
+        marcacionesIds[k].push(d.id);
       }
     });
   }
@@ -321,15 +323,13 @@ $('btnImport').addEventListener('click',async function(){
     const batch=db.batch();
 
     // Opción B: biométrico siempre reemplaza entrada/salida existentes
-    // Borrar entrada previa si existe (cualquier hora) y guardar la del biométrico
-    const idEntExist=marcacionesIds[`${r.dni}_${r.fecha}_entrada`];
-    if(idEntExist) batch.delete(db.collection('marcaciones').doc(idEntExist));
+    // Borrar TODOS los registros de entrada previos (incluyendo duplicados)
+    (marcacionesIds[`${r.dni}_${r.fecha}_entrada`]||[]).forEach(id=>batch.delete(db.collection('marcaciones').doc(id)));
     const refE=db.collection('marcaciones').doc();
     batch.set(refE,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
 
-    // Borrar salida previa si existe y guardar la nueva (solo si biométrico tiene salida)
-    const idSalExist=marcacionesIds[`${r.dni}_${r.fecha}_salida`];
-    if(idSalExist) batch.delete(db.collection('marcaciones').doc(idSalExist));
+    // Borrar TODOS los registros de salida previos (incluyendo duplicados)
+    (marcacionesIds[`${r.dni}_${r.fecha}_salida`]||[]).forEach(id=>batch.delete(db.collection('marcaciones').doc(id)));
     if(r.salida){
       const refS=db.collection('marcaciones').doc();
       batch.set(refS,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
