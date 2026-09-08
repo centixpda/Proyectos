@@ -32,9 +32,9 @@ h1{font-size:20px;font-weight:800;color:#1E293B;text-align:center;margin-bottom:
   <div class="info">
     <strong>¿Qué hace esta herramienta?</strong>
     • Lee todos los usuarios de Firebase<br>
-    • Si el DNI tiene 7 dígitos → agrega un cero al inicio (ej: <code>6585590</code> → <code>06585590</code>)<br>
-    • Si el DNI tiene menos de 7 dígitos → rellena hasta 8<br>
-    • Actualiza también el campo contraseña si coincidía con el DNI anterior<br>
+    • DNI peruano (&lt;8 dígitos) → rellena hasta 8 dígitos con ceros<br>
+    • Carné de extranjería conocidos → corrige al número de 9 dígitos correcto<br>
+    • Actualiza también el campo contraseña si coincidía con el documento anterior<br>
     • Actualiza referencias de supervisor en todos los usuarios
   </div>
 
@@ -61,10 +61,22 @@ const db = firebase.firestore();
 const logEl = document.getElementById('log');
 function log(msg){ logEl.style.display='block'; logEl.textContent+=msg+'\n'; logEl.scrollTop=logEl.scrollHeight; }
 
+// Mapa de CE conocidos: viejo (cualquier forma) → correcto 9 dígitos
+const CE_MAP = {
+  '7612914':'007612914','07612914':'007612914',
+  '7519681':'007519681','07519681':'007519681',
+  '30426267':'030426267',
+  '6490535':'006490535','06490535':'006490535',
+  '3312336':'003312336','03312336':'003312336',
+  '2197533':'002197533','02197533':'002197533',
+  '6585590':'006585590','06585590':'006585590',
+};
+
 function padDNI(dni){
   const s = String(dni||'').trim();
-  if(s.length >= 8) return s; // ya está bien
-  return s.padStart(8,'0');
+  if(CE_MAP[s]) return CE_MAP[s]; // CE con corrección conocida
+  if(s.length >= 8) return s;     // DNI ya correcto
+  return s.padStart(8,'0');       // DNI peruano corto
 }
 
 async function corregir(){
@@ -76,15 +88,17 @@ async function corregir(){
   const todos = snap.docs.map(d=>({id:d.id, ...d.data()}));
   log(`Total usuarios encontrados: ${todos.length}`);
 
-  // Identificar los que necesitan corrección
+  // Identificar los que necesitan corrección: DNI corto O CE conocido con valor incorrecto
   const aCorregir = todos.filter(u => {
     const d = String(u.dni||'').trim();
-    return d.length > 0 && d.length < 8;
+    if(!d) return false;
+    if(CE_MAP[d] && CE_MAP[d] !== d) return true; // CE a corregir
+    return d.length < 8; // DNI peruano corto
   });
 
   if(!aCorregir.length){
-    log('\n✅ Todos los DNIs ya tienen 8+ dígitos. No se requiere corrección.');
-    document.getElementById('okBox').textContent='✅ Todos los DNIs ya están correctos.';
+    log('\n✅ Todos los documentos ya están correctos. No se requiere corrección.');
+    document.getElementById('okBox').textContent='✅ Todos los documentos ya están correctos.';
     document.getElementById('okBox').style.display='block';
     btn.textContent='✓ Sin cambios';
     return;
