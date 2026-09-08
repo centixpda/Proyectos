@@ -168,6 +168,15 @@ function parseHora(raw){
   const m=s.match(/^(\d{1,2}):(\d{2})/);
   return m?`${m[1].padStart(2,'0')}:${m[2]}`:null;
 }
+function normDNI(raw){
+  // Convierte a string limpio (solo dígitos)
+  const s=String(raw||'').trim().replace(/[^0-9]/g,'');
+  if(!s)return'';
+  // DNI peruano: 8 dígitos. Si vino como número el Excel le quitó el 0 inicial → rellenar
+  if(s.length<8)return s.padStart(8,'0');
+  // Carné de extranjería u otro: 9+ dígitos → usar tal cual
+  return s;
+}
 
 /* ── Drag & drop ───────────────────────────────────── */
 const dz=$('dropZone');const fi=$('fileInput');
@@ -190,7 +199,13 @@ async function handleFile(file){
 
   // Cargar usuarios de Firestore
   const uSnap=await db.collection('usuarios').get();
-  uSnap.forEach(d=>{const u=d.data();usuariosDB[u.dni]=u;});
+  uSnap.forEach(d=>{
+    const u=d.data();
+    if(!u.dni)return;
+    usuariosDB[u.dni]=u;                     // clave original
+    const norm=normDNI(u.dni);
+    if(norm!==u.dni)usuariosDB[norm]=u;      // clave normalizada (cubre ceros faltantes)
+  });
 
   // Leer Excel con SheetJS
   const buf=await file.arrayBuffer();
@@ -219,7 +234,7 @@ async function handleFile(file){
   const grupos={};
   for(let i=headerRow+1;i<rows.length;i++){
     const r=rows[i];
-    const dni=String(r[ci.dni]||'').trim();
+    const dni=normDNI(r[ci.dni]);
     const fecha=parseFecha(r[ci.fecha]);
     const hora=parseHora(r[ci.hora]);
     const nombre=String(r[ci.nombre]||'').trim();
