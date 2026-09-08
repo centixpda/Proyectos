@@ -80,7 +80,9 @@ input,select,textarea,button{font-family:var(--font)}
 
 /* STATS */
 .stats-row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
-.stat-card{background:#fff;border-radius:var(--r-sm);padding:13px 18px;box-shadow:var(--sh-sm);text-align:center;min-width:100px;flex:0 0 auto}
+.stat-card{background:#fff;border-radius:var(--r-sm);padding:13px 18px;box-shadow:var(--sh-sm);text-align:center;min-width:100px;flex:0 0 auto;cursor:pointer;transition:box-shadow .15s,transform .15s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.13)}
+.stat-card.sf-active{box-shadow:0 0 0 2.5px var(--blue),var(--sh-sm);transform:translateY(-2px)}
 .stat-n{font-size:26px;font-weight:800;color:var(--blue);line-height:1}
 .stat-l{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
 .sc-green .stat-n{color:var(--green)}.sc-red .stat-n{color:var(--red)}.sc-amber .stat-n{color:var(--amber)}.sc-gray .stat-n{color:var(--g400)}
@@ -381,13 +383,16 @@ input,select,textarea,button{font-family:var(--font)}
           <div id="supSelWrap" style="display:none;margin-bottom:12px">
             <select class="fsel" id="supSel" style="min-width:220px"><option value="">Todos los supervisores</option></select>
           </div>
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-n" id="stTotal">—</div><div class="stat-l">Equipo</div></div>
-            <div class="stat-card sc-green"><div class="stat-n" id="stPres">—</div><div class="stat-l">Presentes</div></div>
-            <div class="stat-card sc-amber"><div class="stat-n" id="stTard">—</div><div class="stat-l">Tardanzas</div></div>
-            <div class="stat-card sc-red"><div class="stat-n" id="stAus">—</div><div class="stat-l">Ausentes</div></div>
-            <div class="stat-card"><div class="stat-n" id="stPerm">—</div><div class="stat-l">Permisos</div></div>
-            <div class="stat-card sc-gray"><div class="stat-n" id="stSinM">—</div><div class="stat-l">Sin marcar</div></div>
+          <div class="stats-row" id="statsRow">
+            <div class="stat-card" data-filter="todos" onclick="filtrarStats(this)"><div class="stat-n" id="stTotal">—</div><div class="stat-l">Equipo</div></div>
+            <div class="stat-card sc-green" data-filter="Presente" onclick="filtrarStats(this)"><div class="stat-n" id="stPres">—</div><div class="stat-l">Presentes</div></div>
+            <div class="stat-card sc-amber" data-filter="Tardanza" onclick="filtrarStats(this)"><div class="stat-n" id="stTard">—</div><div class="stat-l">Tardanzas</div></div>
+            <div class="stat-card sc-red" data-filter="Falta" onclick="filtrarStats(this)"><div class="stat-n" id="stAus">—</div><div class="stat-l">Ausentes</div></div>
+            <div class="stat-card" data-filter="perm" onclick="filtrarStats(this)"><div class="stat-n" id="stPerm">—</div><div class="stat-l">Permisos</div></div>
+            <div class="stat-card sc-gray" data-filter="Sin marcar" onclick="filtrarStats(this)"><div class="stat-n" id="stSinM">—</div><div class="stat-l">Sin marcar</div></div>
+          </div>
+          <div id="statFiltroLabel" style="display:none;text-align:center;margin-top:8px;font-size:12.5px;color:var(--g400)">
+            Mostrando: <strong id="statFiltroNombre"></strong> · <span style="color:var(--blue);cursor:pointer;text-decoration:underline" onclick="filtrarStats(document.querySelector('.stat-card[data-filter=todos]'))">Ver todos</span>
           </div>
         </div>
         <div class="sec">
@@ -855,7 +860,8 @@ function renderHoy(members,marcas){
     const iconos=ms.length
       ?ms.sort((a,b)=>(a.hora||'').localeCompare(b.hora||'')).map(m=>{const ev=EVM[m.evento_id]||{icon:'⦿'};return`<span title="${m.hora} · ${m.evento_label}" style="font-size:18px;cursor:default">${ev.icon}</span>`;}).join('')
       :'<span style="color:var(--g400);font-size:12px">—</span>';
-    return`<tr style="cursor:pointer" data-dni="${u.dni}"><td style="color:var(--g400)">${u.dni}</td><td style="font-weight:600">${u.nombre}</td><td style="font-variant-numeric:tabular-nums">${ent}</td><td style="font-variant-numeric:tabular-nums">${sal}</td><td style="font-size:17px;letter-spacing:1px">${iconos}</td><td><span class="badge" style="background:${st.color}20;color:${st.color}">${st.label}</span></td></tr>`;
+    const stKey=st.label==='Tardanza'?'Tardanza':['Permiso','Desc. Médico','Incidencia','Feriado'].includes(st.label)?'perm':st.label;
+    return`<tr style="cursor:pointer" data-dni="${u.dni}" data-status="${stKey}"><td style="color:var(--g400)">${u.dni}</td><td style="font-weight:600">${u.nombre}</td><td style="font-variant-numeric:tabular-nums">${ent}</td><td style="font-variant-numeric:tabular-nums">${sal}</td><td style="font-size:17px;letter-spacing:1px">${iconos}</td><td><span class="badge" style="background:${st.color}20;color:${st.color}">${st.label}</span></td></tr>`;
   }).join('');
   $('teamTbl').querySelectorAll('tr[data-dni]').forEach(tr=>{
     tr.addEventListener('click',()=>{
@@ -863,6 +869,29 @@ function renderHoy(members,marcas){
       openDetalle(u,_teamByDni[tr.dataset.dni]||[]);
     });
   });
+}
+function filtrarStats(card){
+  const filtro=card.dataset.filter;
+  // Resaltar tarjeta activa
+  document.querySelectorAll('.stat-card').forEach(c=>c.classList.remove('sf-active'));
+  if(filtro!=='todos') card.classList.add('sf-active');
+  // Mostrar/ocultar filas
+  document.querySelectorAll('#teamTbl tr[data-status]').forEach(tr=>{
+    if(filtro==='todos') tr.style.display='';
+    else if(filtro==='perm') tr.style.display=tr.dataset.status==='perm'?'':'none';
+    else if(filtro==='Presente') tr.style.display=(tr.dataset.status==='Presente'||tr.dataset.status==='Tardanza')?'':'none';
+    else tr.style.display=tr.dataset.status===filtro?'':'none';
+  });
+  // Etiqueta informativa
+  const label=$('statFiltroLabel');
+  const nombres={todos:'Todos',Presente:'Presentes',Tardanza:'Tardanzas',Falta:'Ausentes',perm:'Permisos / Otros',Sin_marcar:'Sin marcar'};
+  if(filtro==='todos'){label.style.display='none';}
+  else{
+    $('statFiltroNombre').textContent=nombres[filtro.replace(' ','_')]||filtro;
+    label.style.display='block';
+  }
+  // Scroll suave a la tabla
+  document.querySelector('.tbl-wrap')?.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 async function loadSupsSelects(){
   try{
