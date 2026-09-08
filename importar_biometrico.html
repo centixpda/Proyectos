@@ -169,13 +169,22 @@ function parseHora(raw){
   return m?`${m[1].padStart(2,'0')}:${m[2]}`:null;
 }
 function normDNI(raw){
-  // Convierte a string limpio (solo dígitos)
   const s=String(raw||'').trim().replace(/[^0-9]/g,'');
   if(!s)return'';
-  // DNI peruano: 8 dígitos. Si vino como número el Excel le quitó el 0 inicial → rellenar
-  if(s.length<8)return s.padStart(8,'0');
-  // Carné de extranjería u otro: 9+ dígitos → usar tal cual
+  if(s.length<8)return s.padStart(8,'0'); // DNI peruano sin cero inicial
   return s;
+}
+// Resuelve el DNI del biométrico buscando coincidencia en usuariosDB
+// Prueba: valor exacto → relleno a 8 → relleno a 9 → fallback a 8
+function resolverDNI(raw,uDB){
+  const s=String(raw||'').trim().replace(/[^0-9]/g,'');
+  if(!s)return'';
+  if(uDB[s])return s;
+  const p8=s.padStart(8,'0');
+  if(uDB[p8])return p8;
+  const p9=s.padStart(9,'0');
+  if(uDB[p9])return p9;
+  return p8; // fallback: DNI peruano estándar
 }
 
 /* ── Drag & drop ───────────────────────────────────── */
@@ -234,7 +243,7 @@ async function handleFile(file){
   const grupos={};
   for(let i=headerRow+1;i<rows.length;i++){
     const r=rows[i];
-    const dni=normDNI(r[ci.dni]);
+    const dni=resolverDNI(r[ci.dni],usuariosDB);
     const fecha=parseFecha(r[ci.fecha]);
     const hora=parseHora(r[ci.hora]);
     const nombre=String(r[ci.nombre]||'').trim();
