@@ -435,7 +435,7 @@ input,select,textarea,button{font-family:var(--font)}
           </div>
           <div id="repAsist">
             <div class="tbl-wrap">
-              <table class="tbl"><thead><tr><th>Nombre</th><th>DNI</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Otros eventos</th></tr></thead>
+              <table class="tbl"><thead><tr><th>Nombre</th><th>Supervisor</th><th>DNI</th><th>Fecha</th><th>Evento</th><th>Hora</th></tr></thead>
               <tbody id="tAsist"><tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">Selecciona fechas y genera el reporte</td></tr></tbody></table>
             </div>
           </div>
@@ -964,11 +964,13 @@ function renderRep(){if(repTab==='asist')renderAsist();else renderAusent()}
 function renderAsist(){
   const tb=$('tAsist');
   if(!repData.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:22px">Sin datos</td></tr>';return}
-  const g={};
-  repData.forEach(d=>{const k=`${d.dni}_${d.fecha}`;if(!g[k])g[k]={nombre:d.nombre,dni:d.dni,fecha:d.fecha,ent:'—',sal:'—',otros:[]};if(d.evento_id==='entrada')g[k].ent=d.hora;else if(d.evento_id==='salida')g[k].sal=d.hora;else g[k].otros.push(d)});
-  tb.innerHTML=Object.values(g).sort((a,b)=>a.fecha.localeCompare(b.fecha)||a.nombre.localeCompare(b.nombre)).map(r=>{
-    const otros=r.otros.map(d=>{const ev=EVM[d.evento_id]||{icon:'⦿',color:'#94A3B8'};return`<span class="badge" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${d.hora}</span>`}).join(' ')||'—';
-    return`<tr><td style="font-weight:600">${r.nombre}</td><td style="color:var(--g400)">${r.dni}</td><td>${r.fecha}</td><td style="font-variant-numeric:tabular-nums">${r.ent}</td><td style="font-variant-numeric:tabular-nums">${r.sal}</td><td>${otros}</td></tr>`;
+  const supMap={};
+  document.querySelectorAll('#rSupSel option').forEach(o=>{if(o.value)supMap[o.value]=o.textContent;});
+  const sorted=[...repData].sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')||(a.fecha||'').localeCompare(b.fecha||'')||(a.hora||'').localeCompare(b.hora||''));
+  tb.innerHTML=sorted.map(d=>{
+    const ev=EVM[d.evento_id]||{icon:'⦿',color:'#94A3B8',label:d.evento_label||d.evento_id||''};
+    const supNom=supMap[d.supervisor_dni]||d.supervisor_dni||'—';
+    return`<tr><td style="font-weight:600">${d.nombre||''}</td><td style="color:var(--g400);font-size:12px">${supNom}</td><td style="color:var(--g400)">${d.dni||''}</td><td>${d.fecha||''}</td><td><span class="badge" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${d.evento_label||ev.label||d.evento_id}</span></td><td style="font-variant-numeric:tabular-nums;font-weight:600">${d.hora||'—'}</td></tr>`;
   }).join('');
 }
 function renderAusent(){
@@ -997,9 +999,14 @@ function expRep(){
   if(!repData.length){toast('Genera un reporte primero','err');return}
   let rows;
   if(repTab==='asist'){
-    rows=[['Nombre','DNI','Fecha','Entrada','Salida','Otros']];
-    const g={};repData.forEach(d=>{const k=`${d.dni}_${d.fecha}`;if(!g[k])g[k]={nombre:d.nombre,dni:d.dni,fecha:d.fecha,ent:'',sal:'',otros:[]};if(d.evento_id==='entrada')g[k].ent=d.hora;else if(d.evento_id==='salida')g[k].sal=d.hora;else g[k].otros.push(`${d.evento_label} ${d.hora}`)});
-    Object.values(g).forEach(r=>rows.push([r.nombre,r.dni,r.fecha,r.ent||'',r.sal||'',r.otros.join(' | ')]));
+    const supMap={};
+    document.querySelectorAll('#rSupSel option').forEach(o=>{if(o.value)supMap[o.value]=o.textContent;});
+    rows=[['Nombre','Supervisor','DNI','Fecha','Evento','Hora']];
+    const sorted=[...repData].sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')||(a.fecha||'').localeCompare(b.fecha||'')||(a.hora||'').localeCompare(b.hora||''));
+    sorted.forEach(d=>{
+      const supNom=supMap[d.supervisor_dni]||d.supervisor_dni||'';
+      rows.push([d.nombre||'',supNom,d.dni||'',d.fecha||'',d.evento_label||d.evento_id||'',d.hora||'']);
+    });
   }else{
     rows=[['Nombre','DNI','Faltas','Tardanzas','Permisos','Desc Med','Sal Aut','Incidencias','Total']];
     const ba={};repData.forEach(d=>{if(!ba[d.dni])ba[d.dni]={nombre:d.nombre,dni:d.dni,f:0,t:0,pm:0,dm:0,sa:0,inc:0};const a=ba[d.dni];if(d.evento_id==='falta')a.f++;else if(d.evento_id==='tardanza')a.t++;else if(['perm_topic','perm_retorno'].includes(d.evento_id))a.pm++;else if(d.evento_id==='desc_med')a.dm++;else if(['sal_medio','sal_hhee','sal_desc','sal_recup'].includes(d.evento_id))a.sa++;else if(['inc_dia','fin_inc','inc_jornada','inc_inicio'].includes(d.evento_id))a.inc++});
