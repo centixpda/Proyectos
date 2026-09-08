@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CAP CENTIX · Limpiar Datos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#0D2347;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:480px;box-shadow:0 24px 80px rgba(0,0,0,.4)}
+.ico{font-size:48px;text-align:center;margin-bottom:16px}
+h1{font-size:22px;font-weight:800;color:#1E293B;text-align:center;margin-bottom:8px}
+.sub{font-size:14px;color:#64748B;text-align:center;margin-bottom:28px;line-height:1.6}
+.warn{background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;padding:14px 16px;font-size:13px;color:#991B1B;margin-bottom:24px;line-height:1.6}
+.warn strong{display:block;margin-bottom:4px;font-size:14px}
+label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:6px}
+input{width:100%;border:1.5px solid #E2E8F0;border-radius:10px;padding:11px 13px;font-size:15px;outline:none;transition:border .2s;margin-bottom:20px}
+input:focus{border-color:#DC2626}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn:hover:not(:disabled){opacity:.88}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-danger{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff}
+.btn-back{background:#F1F5F9;color:#475569;margin-top:10px}
+.log{margin-top:20px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;font-size:12.5px;font-family:monospace;color:#334155;max-height:200px;overflow-y:auto;display:none;white-space:pre-wrap}
+.ok-box{background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:12px;padding:16px;text-align:center;font-size:14px;font-weight:600;color:#166534;display:none;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="ico">🗑️</div>
+  <h1>Limpiar todas las marcaciones</h1>
+  <p class="sub">Esta acción elimina <strong>permanentemente</strong> todos los registros de asistencia de Firebase. Los usuarios no se borran.</p>
+
+  <div class="warn">
+    <strong>⚠️ Acción irreversible</strong>
+    Se eliminarán todas las marcaciones (entradas, salidas y eventos) de todos los asesores. Esta acción no se puede deshacer.
+  </div>
+
+  <label>Escribe <strong>BORRAR TODO</strong> para confirmar</label>
+  <input type="text" id="confirm" placeholder="BORRAR TODO" oninput="checkConfirm()"/>
+
+  <button class="btn btn-danger" id="btnBorrar" disabled onclick="borrarTodo()">🗑️ Eliminar todas las marcaciones</button>
+  <button class="btn btn-back" onclick="history.back()">← Cancelar y volver</button>
+
+  <div class="log" id="log"></div>
+  <div class="ok-box" id="okBox">✅ Todas las marcaciones han sido eliminadas. La base de datos está en cero.</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:            "AIzaSyD7G488hUP4Qw7FHSVZRTMXvwGX8P_nAwU",
+  authDomain:        "centix-asistencia.firebaseapp.com",
+  projectId:         "centix-asistencia",
+  storageBucket:     "centix-asistencia.firebasestorage.app",
+  messagingSenderId: "421810748910",
+  appId:             "1:421810748910:web:b36da00769495e3cd322ff"
+});
+const db = firebase.firestore();
+
+function checkConfirm(){
+  document.getElementById('btnBorrar').disabled =
+    document.getElementById('confirm').value.trim() !== 'BORRAR TODO';
+}
+
+const logEl = document.getElementById('log');
+function log(msg){ logEl.style.display='block'; logEl.textContent+=msg+'\n'; logEl.scrollTop=logEl.scrollHeight; }
+
+async function borrarTodo(){
+  const btn = document.getElementById('btnBorrar');
+  btn.disabled = true;
+  btn.textContent = 'Eliminando…';
+  log('Iniciando limpieza de marcaciones...');
+
+  let total = 0;
+  let continuar = true;
+
+  while(continuar){
+    const snap = await db.collection('marcaciones').limit(400).get();
+    if(snap.empty){ continuar=false; break; }
+
+    const batch = db.batch();
+    snap.docs.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+    total += snap.docs.length;
+    log(`Eliminados ${total} registros...`);
+  }
+
+  log(`\n✅ Completado. ${total} marcaciones eliminadas.`);
+  document.getElementById('okBox').style.display = 'block';
+  btn.textContent = '✓ Completado';
+}
+</script>
+</body>
+</html>
