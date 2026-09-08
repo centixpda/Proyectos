@@ -259,10 +259,13 @@ async function handleFile(file){
     let estado='ok';
     if(!uDB)estado='nouser';
     else{
-      // Dup: la hora de entrada Y la hora de salida coinciden exactamente con lo que ya está en Firebase
+      // Dup: horas idénticas Y sin documentos duplicados que limpiar
       const dupE=marcacionesExist.has(`${g.dni}_${g.fecha}_${entrada}_entrada`);
       const dupS=salida&&marcacionesExist.has(`${g.dni}_${g.fecha}_${salida}_salida`);
-      if(dupE&&(!salida||dupS))estado='dup';
+      const entradas=(marcacionesIds[`${g.dni}_${g.fecha}_entrada`]||[]).length;
+      const salidas=(marcacionesIds[`${g.dni}_${g.fecha}_salida`]||[]).length;
+      const hayDuplicados=entradas>1||salidas>1;
+      if(dupE&&(!salida||dupS)&&!hayDuplicados)estado='dup';
     }
     return{...g,entrada,salida,uDB,estado};
   });
