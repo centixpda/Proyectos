@@ -606,37 +606,43 @@ const EVS=[
   // Refrigerio
   {id:"refrig_ini",   label:"Refrigerio Inicio",                                icon:"🍽️",color:"#D97706",obs:false},
   {id:"refrig_fin",   label:"Refrigerio Fin",                                   icon:"☕",color:"#D97706",obs:false},
+  // Reuniones
+  {id:"reunion",      label:"Reunión",                                          icon:"🤝",color:"#0369A1",obs:true},
+  {id:"reunion_ger",  label:"Reunión Gerencia",                                 icon:"🏢",color:"#0369A1",obs:true},
+  {id:"fin_reunion",  label:"Fin de Reunión",                                   icon:"✔️",color:"#0369A1",obs:false},
   // Feedback
   {id:"feedback",     label:"Feedback",                                         icon:"💬",color:"#7C3AED",obs:true},
   {id:"feedback_grp", label:"Feedback Grupal",                                  icon:"👥",color:"#7C3AED",obs:true},
   {id:"fin_feedback", label:"Fin de Feedback",                                  icon:"✅",color:"#7C3AED",obs:false},
-  // Permisos
+  // Permisos y salidas
   {id:"perm_topic",   label:"Permiso Tópico",                                   icon:"🩺",color:"#0891B2",obs:true},
+  {id:"ret_topico",   label:"Retorno de Tópico",                                icon:"↩️",color:"#0891B2",obs:false},
   {id:"perm_retorno", label:"Permiso con Retorno",                              icon:"📋",color:"#2563EB",obs:true},
   {id:"ret_permiso",  label:"Retorno de Permiso",                               icon:"↩️",color:"#0891B2",obs:false},
+  {id:"sal_sctr",     label:"Salida SCTR",                                      icon:"🦺",color:"#DB2777",obs:true},
+  {id:"sal_tramite",  label:"Salida por Trámite",                               icon:"📂",color:"#DB2777",obs:true},
+  {id:"sal_compra",   label:"Salida por Compra",                                icon:"🛒",color:"#DB2777",obs:true},
+  {id:"sal_medio",    label:"Salida Autorizada Medio Turno",                    icon:"⏰",color:"#DB2777",obs:true},
+  {id:"sal_hhee",     label:"Salida Autorizada antes de Fin de Turno por HHEE", icon:"📤",color:"#DB2777",obs:true},
+  {id:"sal_cumple",   label:"Salida Autorizada Cumpleaños",                     icon:"🎂",color:"#DB2777",obs:false},
   // Descansos y beneficios
   {id:"desc_med",     label:"Descanso Médico",                                  icon:"🏥",color:"#0284C7",obs:true},
   {id:"desc_feriado", label:"Descanso por Feriado Laborado",                    icon:"🏖️",color:"#06B6D4",obs:false},
+  {id:"desc_domin",   label:"Descanso por Dominical Trabajado",                 icon:"📅",color:"#06B6D4",obs:false},
+  {id:"vacaciones",   label:"Vacaciones",                                       icon:"🌴",color:"#10B981",obs:false},
+  {id:"suspension",   label:"Suspensión",                                       icon:"🚫",color:"#DC2626",obs:true},
   {id:"comp_hhee",    label:"Compensación por Horas Adicionales",               icon:"⚡",color:"#B45309",obs:true},
   // Capacitación
   {id:"cap_horario",  label:"Capacitación dentro de Horario",                   icon:"📚",color:"#4F46E5",obs:true},
   {id:"cap_rrhh",     label:"Capacitación por RRHH",                            icon:"🎓",color:"#4F46E5",obs:true},
+  {id:"fin_cap",      label:"Fin de Capacitación",                              icon:"🎯",color:"#4F46E5",obs:false},
   // Incidencias
-  {id:"inc_dia",      label:"Incidencia Día Completo",                          icon:"⚙️",color:"#64748B",obs:true},
   {id:"inc_jornada",  label:"Incidencia dentro de Jornada",                     icon:"⚠️",color:"#F59E0B",obs:true},
-  {id:"inc_inicio",   label:"Incidencia Inicio de Jornada",                     icon:"🚨",color:"#F59E0B",obs:true},
   // Premiaciones
   {id:"prem_dia",     label:"Premiación Desempeño - Día Completo",              icon:"🏆",color:"#D97706",obs:false},
-  {id:"prem_fin",     label:"Premiación Desempeño - Fin de Turno",              icon:"🥇",color:"#D97706",obs:false},
   // Horas extra
   {id:"ini_hhee",     label:"Inicio HHEE",                                      icon:"🕐",color:"#7C3AED",obs:false},
   {id:"fin_hhee",     label:"Fin HHEE",                                         icon:"🕔",color:"#7C3AED",obs:false},
-  // Salidas autorizadas
-  {id:"sal_medio",    label:"Salida Autorizada Medio Turno",                    icon:"⏰",color:"#DB2777",obs:true},
-  {id:"sal_hhee",     label:"Salida Autorizada antes de Fin de Turno por HHEE", icon:"📤",color:"#DB2777",obs:true},
-  {id:"sal_desc",     label:"Salida Autorizada con Descuento",                  icon:"📉",color:"#DB2777",obs:true},
-  {id:"sal_recup",    label:"Salida Autorizada con Recupero",                   icon:"🔄",color:"#DB2777",obs:true},
-  {id:"sal_cumple",   label:"Salida Autorizada Cumpleaños",                     icon:"🎂",color:"#DB2777",obs:false},
 ];
 const EVM=Object.fromEntries(EVS.map(e=>[e.id,e]));
 
@@ -988,8 +994,8 @@ function renderAusent(){
     else if(d.evento_id==='tardanza')a.t++;
     else if(['perm_topic','perm_retorno'].includes(d.evento_id))a.pm++;
     else if(d.evento_id==='desc_med')a.dm++;
-    else if(['sal_medio','sal_hhee','sal_desc','sal_recup'].includes(d.evento_id))a.sa++;
-    else if(['inc_dia','fin_inc','inc_jornada','inc_inicio'].includes(d.evento_id))a.inc++;
+    else if(['sal_medio','sal_hhee','sal_sctr','sal_tramite','sal_compra','sal_cumple'].includes(d.evento_id))a.sa++;
+    else if(['inc_jornada'].includes(d.evento_id))a.inc++;
   });
   const rows=Object.values(ba).sort((a,b)=>a.nombre.localeCompare(b.nombre));
   const rd=v=>v>0?`<span style="color:#DC2626;font-weight:700">${v}</span>`:0;
