@@ -67,6 +67,25 @@ select.fsel{padding:7px 10px;border:1.5px solid #E2E8F0;border-radius:8px;font-s
     Columnas esperadas: <strong>ID de Usuario · Nombre · Fecha · Tiempo · Nombre de la Terminal</strong><br>
     Formato de fecha: <code>02-Set.-2026</code> &nbsp;·&nbsp; Formato de hora: <code>07:51</code>
   </div>
+
+  <!-- Configuración de tardanza -->
+  <div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:10px;padding:14px 16px;margin-bottom:16px">
+    <div style="font-size:12.5px;font-weight:700;color:#92400E;margin-bottom:10px">⏱️ Detección automática de tardanza</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end">
+      <div>
+        <label class="flbl">Hora límite de entrada</label>
+        <input type="time" id="horaLimite" value="08:00" style="padding:7px 10px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;color:#1E293B;background:#fff"/>
+      </div>
+      <div>
+        <label class="flbl">Tolerancia (minutos)</label>
+        <input type="number" id="toleranciaMin" value="0" min="0" max="60" style="width:80px;padding:7px 10px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;color:#1E293B;background:#fff"/>
+      </div>
+      <div style="font-size:12px;color:#92400E;line-height:1.5;padding-bottom:2px">
+        Si la primera marcación del día supera este límite<br>se registrará una <strong>Tardanza</strong> automáticamente.
+      </div>
+    </div>
+  </div>
+
   <div class="drop-zone" id="dropZone">
     <div style="font-size:36px">📂</div>
     <strong>Arrastra el archivo Excel aquí</strong>
@@ -196,11 +215,19 @@ dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');ha
 fi.addEventListener('change',()=>handleFile(fi.files[0]));
 function $(id){return document.getElementById(id)}
 
+/* ── Detección de tardanza ─────────────────────────── */
+function minutos(hora){const[h,m]=hora.split(':').map(Number);return h*60+m;}
+function detectarTardanza(horaEntrada){
+  const limite=$('horaLimite').value||'08:00';
+  const tol=parseInt($('toleranciaMin').value)||0;
+  return minutos(horaEntrada)>minutos(limite)+tol;
+}
+
 /* ── Globals ───────────────────────────────────────── */
 let registros=[];      // filas procesadas por persona+día
 let usuariosDB={};     // dni → {nombre, supervisor_dni, rol}
 let marcacionesExist=new Set();
-let marcacionesIds={}; // dni_fecha_evento_id → docId (para borrar en Opción B)
+let marcacionesIds={}; // dni_fecha_evento_id → [docId,...] (para borrar en Opción B)
 
 async function handleFile(file){
   if(!file)return;
@@ -265,8 +292,9 @@ async function handleFile(file){
     mSnap.forEach(d=>{
       const m=d.data();
       marcacionesExist.add(`${m.dni}_${m.fecha}_${m.hora}_${m.evento_id}`);
-      // Guardar TODOS los IDs de entrada/salida (puede haber duplicados)
-      if(m.evento_id==='entrada'||m.evento_id==='salida'){
+      // Guardar TODOS los IDs de entrada/salida/tardanza-auto (puede haber duplicados)
+      const esAutoTardanza=m.evento_id==='tardanza'&&m.observacion==='[ZKTeco Auto]';
+      if(m.evento_id==='entrada'||m.evento_id==='salida'||esAutoTardanza){
         const k=`${m.dni}_${m.fecha}_${m.evento_id}`;
         if(!marcacionesIds[k])marcacionesIds[k]=[];
         marcacionesIds[k].push(d.id);
@@ -291,7 +319,8 @@ async function handleFile(file){
       const hayDuplicados=entradas>1||salidas>1;
       if(dupE&&(!salida||dupS)&&!hayDuplicados)estado='dup';
     }
-    return{...g,entrada,salida,uDB,estado};
+    const tardanza=uDB&&estado!=='nouser'?detectarTardanza(entrada):false;
+    return{...g,entrada,salida,uDB,estado,tardanza};
   });
 
   // Poblar filtro de fechas
@@ -312,14 +341,16 @@ function renderPreview(){
   const ok=registros.filter(r=>r.estado==='ok').length;
   const dup=registros.filter(r=>r.estado==='dup').length;
   const noUser=registros.filter(r=>r.estado==='nouser').length;
+  const tard=registros.filter(r=>r.tardanza&&r.estado!=='nouser').length;
   const importables=ok+dup;
   $('statsRow').innerHTML=`
     <div class="stat"><div class="stat-n">${tot}</div><div class="stat-l">Total días-persona</div></div>
     <div class="stat sc-green"><div class="stat-n">${ok}</div><div class="stat-l">Nuevos</div></div>
     <div class="stat sc-blue"><div class="stat-n">${dup}</div><div class="stat-l">Se actualizarán</div></div>
+    <div class="stat sc-amber"><div class="stat-n">${tard}</div><div class="stat-l">Con tardanza</div></div>
     <div class="stat sc-red"><div class="stat-n">${noUser}</div><div class="stat-l">DNI no hallado</div></div>`;
   $('warnNoMatch').style.display=noUser>0?'block':'none';
-  $('importCount').textContent=`Se importarán / actualizarán ${importables} registros.`;
+  $('importCount').textContent=`Se importarán / actualizarán ${importables} registros${tard>0?` · ${tard} con tardanza automática`:'.'}`;
 
   const badges={ok:'<span class="badge b-green">✓ Nuevo</span>',dup:'<span class="badge b-blue">🔄 Actualizar</span>',nouser:'<span class="badge b-red">Sin usuario</span>'};
   $('prevTbl').innerHTML=filtrados.sort((a,b)=>a.fecha.localeCompare(b.fecha)||a.nombre.localeCompare(b.nombre)).map(r=>`
@@ -327,7 +358,7 @@ function renderPreview(){
       <td style="color:#94A3B8;font-size:11.5px">${r.dni}</td>
       <td style="font-weight:600">${r.nombre||r.uDB?.nombre||'—'}</td>
       <td>${r.fecha}</td>
-      <td><span class="badge b-green">🟢 ${r.entrada}</span></td>
+      <td><span class="badge b-green">🟢 ${r.entrada}</span>${r.tardanza&&r.estado!=='nouser'?'<span class="badge b-amber" style="margin-left:4px">⏱️ Tardanza</span>':''}</td>
       <td>${r.salida?`<span class="badge b-gray">🔴 ${r.salida}`:'<span class="badge b-amber">⏳ Solo entrada</span>'}</td>
       <td style="font-size:11.5px;color:#64748B">${r.horas.length} marcación${r.horas.length!==1?'es':''}</td>
       <td style="font-size:11px;color:#64748B">${r.terminales.join(', ')||'—'}</td>
@@ -350,19 +381,24 @@ $('btnImport').addEventListener('click',async function(){
     const u=r.uDB;
     const batch=db.batch();
 
-    // Opción B: biométrico siempre reemplaza entrada/salida existentes
-    // Borrar TODOS los registros de entrada previos (incluyendo duplicados)
+    // Opción B: biométrico siempre reemplaza entrada/salida/tardanza-auto existentes
     (marcacionesIds[`${r.dni}_${r.fecha}_entrada`]||[]).forEach(id=>batch.delete(db.collection('marcaciones').doc(id)));
     const refE=db.collection('marcaciones').doc();
-    batch.set(refE,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    batch.set(refE,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',estado:'activo',aprueba:null,fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
 
-    // Borrar TODOS los registros de salida previos (incluyendo duplicados)
+    // Tardanza automática: borrar anterior y crear nueva si corresponde
+    (marcacionesIds[`${r.dni}_${r.fecha}_tardanza`]||[]).forEach(id=>batch.delete(db.collection('marcaciones').doc(id)));
+    if(r.tardanza){
+      const refT=db.collection('marcaciones').doc();
+      batch.set(refT,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'tardanza',evento_label:'Tardanza',observacion:'[ZKTeco Auto]',estado:'activo',aprueba:null,fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+
     (marcacionesIds[`${r.dni}_${r.fecha}_salida`]||[]).forEach(id=>batch.delete(db.collection('marcaciones').doc(id)));
     if(r.salida){
       const refS=db.collection('marcaciones').doc();
-      batch.set(refS,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      batch.set(refS,{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',estado:'activo',aprueba:null,fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     }
-    try{await batch.commit();ok++;log(`✅ ${u.nombre} · ${r.fecha} · E:${r.entrada}${r.salida?' S:'+r.salida:' (sin salida aún)'}`)}
+    try{await batch.commit();ok++;log(`✅ ${u.nombre} · ${r.fecha} · E:${r.entrada}${r.tardanza?' ⏱️ TARDANZA':''}${r.salida?' S:'+r.salida:' (sin salida aún)'}`)}
     catch(e){err++;log(`❌ ERROR ${r.dni}: ${e.message}`)}
   }
 
