@@ -906,7 +906,9 @@ function openDetalle(u,ms){
     const sorted=[...ms].sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
     $('mDList').innerHTML=sorted.map(r=>{
       const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};
-      return`<div class="feed-item"><div style="font-size:24px;width:36px;text-align:center;flex-shrink:0">${ev.icon}</div><div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600;color:${ev.color}">${r.evento_label}</div>${r.observacion?`<div style="font-size:12px;color:var(--g400);margin-top:2px">"${r.observacion}"</div>`:''}</div><div style="font-size:13px;color:var(--g400);font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:8px">${r.hora||'--:--'}</div></div>`;
+      const obsVisible=r.observacion&&!String(r.observacion).startsWith('[ZKTeco');
+      const horaDisplay=r.evento_id==='tardanza'&&r.min_tarde>0?`<span style="font-weight:700;color:#EA580C">+${r.min_tarde} min</span>`:`<span>${r.hora||'--:--'}</span>`;
+      return`<div class="feed-item"><div style="font-size:24px;width:36px;text-align:center;flex-shrink:0">${ev.icon}</div><div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600;color:${ev.color}">${r.evento_label}</div>${obsVisible?`<div style="font-size:12px;color:var(--g400);margin-top:2px">"${r.observacion}"</div>`:''}</div><div style="font-size:13px;color:var(--g400);font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:8px">${horaDisplay}</div></div>`;
     }).join('');
   }
   $('mDetalle').style.display='flex';
@@ -966,7 +968,7 @@ function renderHoy(members,marcas){
     const ent=ms.find(m=>m.evento_id==='entrada')?.hora||'—';
     const sal=ms.find(m=>m.evento_id==='salida')?.hora||'—';
     const iconos=ms.length
-      ?ms.sort((a,b)=>(a.hora||'').localeCompare(b.hora||'')).map(m=>{const ev=EVM[m.evento_id]||{icon:'⦿'};return`<span title="${m.hora} · ${m.evento_label}" style="font-size:18px;cursor:default">${ev.icon}</span>`;}).join('')
+      ?ms.sort((a,b)=>(a.hora||'').localeCompare(b.hora||'')).map(m=>{const ev=EVM[m.evento_id]||{icon:'⦿'};const tip=m.evento_id==='tardanza'&&m.min_tarde>0?`+${m.min_tarde} min · ${m.evento_label}`:m.hora?`${m.hora} · ${m.evento_label}`:m.evento_label;return`<span title="${tip}" style="font-size:18px;cursor:default">${ev.icon}</span>`;}).join('')
       :'<span style="color:var(--g400);font-size:12px">—</span>';
     const stKey=st.label==='Tardanza'?'Tardanza':['Permiso','Desc. Médico','Incidencia','Feriado'].includes(st.label)?'perm':st.label;
     return`<tr style="cursor:pointer" data-dni="${u.dni}" data-status="${stKey}"><td style="color:var(--g400)">${u.dni}</td><td style="font-weight:600">${u.nombre}</td><td style="font-variant-numeric:tabular-nums">${ent}</td><td style="font-variant-numeric:tabular-nums">${sal}</td><td style="font-size:17px;letter-spacing:1px">${iconos}</td><td><span class="badge" style="background:${st.color}20;color:${st.color}">${st.label}</span></td></tr>`;
@@ -1321,7 +1323,7 @@ async function bioHandleFile(file){
     const uDB=bioUsuDB[g.dni];
     let estado='ok';
     if(!uDB)estado='nouser';
-    else if(bioExist.has(`${g.dni}_${g.fecha}_${entrada}_entrada`)&&(!salida||bioExist.has(`${g.dni}_${g.fecha}_${salida}_salida`)))estado='dup';
+    else if(bioExist.has(`${g.dni}_${g.fecha}_${entrada}_entrada`))estado='update';
     const minTarde=uDB&&estado!=='nouser'?Math.max(0,bioMin(entrada)-bioMin(bioLimite)-bioTol):0;
     return{...g,entrada,salida,uDB,estado,tardanza:minTarde>0,minTarde};
   });
@@ -1335,16 +1337,16 @@ async function bioHandleFile(file){
 function bioPrevRender(){
   const fe=$('bioFiltroE').value,ff=$('bioFiltroF').value;
   const fil=bioRecs.filter(r=>(!fe||r.estado===fe)&&(!ff||r.fecha===ff));
-  const tot=bioRecs.length,ok=bioRecs.filter(r=>r.estado==='ok').length,dup=bioRecs.filter(r=>r.estado==='dup').length,nu=bioRecs.filter(r=>r.estado==='nouser').length,tard=bioRecs.filter(r=>r.tardanza&&r.estado!=='nouser').length;
-  $('bioStatsRow').innerHTML=`<div class="stat-card"><div class="stat-n">${tot}</div><div class="stat-l">Total</div></div><div class="stat-card sc-green"><div class="stat-n">${ok}</div><div class="stat-l">Para importar</div></div><div class="stat-card sc-amber"><div class="stat-n">${tard}</div><div class="stat-l">Con tardanza</div></div><div class="stat-card sc-gray"><div class="stat-n">${dup}</div><div class="stat-l">Ya existen</div></div><div class="stat-card sc-red"><div class="stat-n">${nu}</div><div class="stat-l">Sin usuario</div></div>`;
+  const tot=bioRecs.length,ok=bioRecs.filter(r=>r.estado==='ok').length,upd=bioRecs.filter(r=>r.estado==='update').length,nu=bioRecs.filter(r=>r.estado==='nouser').length,tard=bioRecs.filter(r=>r.tardanza&&r.estado!=='nouser').length;
+  $('bioStatsRow').innerHTML=`<div class="stat-card"><div class="stat-n">${tot}</div><div class="stat-l">Total</div></div><div class="stat-card sc-green"><div class="stat-n">${ok+upd}</div><div class="stat-l">Para importar</div></div><div class="stat-card sc-amber"><div class="stat-n">${tard}</div><div class="stat-l">Con tardanza</div></div><div class="stat-card" style="background:#EFF6FF"><div class="stat-n" style="color:#1D4ED8">${upd}</div><div class="stat-l">Se actualizarán</div></div><div class="stat-card sc-red"><div class="stat-n">${nu}</div><div class="stat-l">Sin usuario</div></div>`;
   $('bioWarnNoMatch').style.display=nu?'block':'none';
-  const badges={ok:'<span class="badge" style="background:#DCFCE7;color:#15803D">✓ Listo</span>',dup:'<span class="badge" style="background:#F1F5F9;color:#475569">Ya existe</span>',nouser:'<span class="badge" style="background:#FEE2E2;color:#DC2626">Sin usuario</span>'};
+  const badges={ok:'<span class="badge" style="background:#DCFCE7;color:#15803D">✓ Nuevo</span>',update:'<span class="badge" style="background:#EFF6FF;color:#1D4ED8">↺ Actualizar</span>',nouser:'<span class="badge" style="background:#FEE2E2;color:#DC2626">Sin usuario</span>'};
   $('bioPrevTbl').innerHTML=fil.sort((a,b)=>a.fecha.localeCompare(b.fecha)||((a.uDB?.nombre||a.nombre).localeCompare(b.uDB?.nombre||b.nombre))).map(r=>`<tr><td style="color:var(--g400);font-size:11.5px">${r.dni}</td><td style="font-weight:600">${r.uDB?.nombre||r.nombre||'—'}</td><td>${r.fecha}</td><td><span class="badge" style="background:#DCFCE7;color:#15803D">🟢 ${r.entrada}</span>${r.tardanza?`<span class="badge" style="background:#FEF3C7;color:#D97706;margin-left:4px">⏱️ +${r.minTarde} min</span>`:''}</td><td>${r.salida?`<span class="badge" style="background:#F1F5F9;color:#475569">🔴 ${r.salida}</span>`:'<span class="badge" style="background:#FEF3C7;color:#D97706">Solo entrada</span>'}</td><td style="font-size:11.5px;color:var(--g400)">${r.horas.length} marcación${r.horas.length!==1?'es':''}</td><td style="font-size:11px;color:var(--g400)">${r.terminales.join(', ')||'—'}</td><td>${badges[r.estado]||''}</td></tr>`).join('');
 }
 
 async function bioImportar(){
-  const pendientes=bioRecs.filter(r=>r.estado==='ok');
-  if(!pendientes.length){toast('No hay registros nuevos para importar','err');return;}
+  const pendientes=bioRecs.filter(r=>r.estado==='ok'||r.estado==='update');
+  if(!pendientes.length){toast('No hay registros para importar','err');return;}
   $('bioBtnImport').disabled=true;$('bioBtnImport').textContent='Importando…';
   const logEl=$('bioLog');logEl.style.display='block';logEl.textContent='';
   const bioLog=m=>{logEl.textContent+=m+'\n';logEl.scrollTop=logEl.scrollHeight;};
@@ -1353,16 +1355,18 @@ async function bioImportar(){
   for(const r of pendientes){
     const u=r.uDB;
     const batch=db.batch();
-    if(!bioExist.has(`${r.dni}_${r.fecha}_${r.entrada}_entrada`)){
-      batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',aprueba:null,estado:'activo',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    }
-    if(r.salida&&!bioExist.has(`${r.dni}_${r.fecha}_${r.salida}_salida`)){
+    // Borrar marcaciones ZKTeco previas del mismo día (sobreescritura)
+    const prevSnap=await db.collection('marcaciones').where('dni','==',r.dni).where('fecha','==',r.fecha).get();
+    prevSnap.forEach(d=>{if(String(d.data().observacion||'').startsWith('[ZKTeco'))batch.delete(d.ref);});
+    // Insertar entrada
+    batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'entrada',evento_label:'Entrada',observacion:'[ZKTeco]',aprueba:null,estado:'activo',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    // Insertar salida si existe
+    if(r.salida){
       batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'salida',evento_label:'Salida',observacion:'[ZKTeco]',aprueba:null,estado:'activo',fecha:r.fecha,hora:r.salida,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     }
+    // Insertar tardanza automática si aplica
     if(r.tardanza){
-      const prevTard=await db.collection('marcaciones').where('dni','==',r.dni).where('fecha','==',r.fecha).where('evento_id','==','tardanza').where('observacion','==','[ZKTeco Auto]').get();
-      prevTard.forEach(d=>batch.delete(d.ref));
-      batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'tardanza',evento_label:'Tardanza',observacion:`[ZKTeco Auto] +${r.minTarde} min`,aprueba:null,estado:'activo',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      batch.set(db.collection('marcaciones').doc(),{dni:r.dni,nombre:u.nombre,rol:u.rol||'asesor',supervisor_dni:u.supervisor_dni||'',evento_id:'tardanza',evento_label:'Tardanza',observacion:'[ZKTeco Auto]',min_tarde:r.minTarde,aprueba:null,estado:'activo',fecha:r.fecha,hora:r.entrada,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     }
     try{await batch.commit();ok++;bioLog(`✅ ${u.nombre} · ${r.fecha} · E:${r.entrada}${r.salida?' S:'+r.salida:''}${r.tardanza?' ⏱️ +'+r.minTarde+' min':''}`)}
     catch(e){err++;bioLog(`❌ ${r.dni}: ${e.message}`)}
