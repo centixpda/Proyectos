@@ -87,9 +87,39 @@ input,select,textarea,button{font-family:var(--font)}
 .stat-l{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
 .sc-green .stat-n{color:var(--green)}.sc-red .stat-n{color:var(--red)}.sc-amber .stat-n{color:var(--amber)}.sc-gray .stat-n{color:var(--g400)}
 
-/* EVENT BUTTONS */
+/* EVENT SIDEBAR + WORKSPACE */
+.ev-workspace{display:grid;grid-template-columns:210px 1fr;border:1.5px solid var(--g100);border-radius:16px;overflow:hidden;min-height:440px;background:#fff}
+.ev-sidebar{border-right:1.5px solid var(--g100);overflow-y:auto;max-height:560px}
+.ev-cat-hdr{font-size:10px;font-weight:700;color:var(--g400);padding:7px 12px 3px;letter-spacing:.07em;text-transform:uppercase;background:var(--g50);position:sticky;top:0;z-index:1;border-bottom:1px solid var(--g100)}
+.ev-list-btn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--g100);padding:9px 12px;cursor:pointer;transition:background .12s;font-size:12.5px;font-weight:500;color:#1E293B}
+.ev-list-btn:hover{background:#F0F9FF}
+.ev-list-btn:active{background:#BAE6FD}
+.ev-ico-sm{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ev-list-lbl{flex:1;line-height:1.3}
+.apro-tag{font-size:9px;font-weight:700;background:#FEF3C7;color:#92400E;border-radius:4px;padding:2px 5px;white-space:nowrap;flex-shrink:0}
+.ev-feed-panel{padding:14px;overflow-y:auto;max-height:560px;background:#FAFBFF;display:flex;flex-direction:column}
+.ev-feed-title{font-size:11px;font-weight:700;color:var(--g400);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+/* estado badges */
+.est-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;margin-left:4px;flex-shrink:0}
+.est-pend{background:#FEF3C7;color:#92400E}
+.est-apro{background:#DCFCE7;color:#166534}
+.est-rech{background:#FEE2E2;color:#991B1B}
+/* approval inbox */
+.apro-item{background:#fff;border:1.5px solid var(--g100);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.apro-item-body{flex:1;min-width:0}
+.apro-item-nom{font-size:13.5px;font-weight:700;color:#1E293B}
+.apro-item-ev{font-size:12.5px;margin:3px 0}
+.apro-item-obs{font-size:12px;color:var(--g400);font-style:italic}
+.apro-item-meta{font-size:11.5px;color:var(--g400);margin-top:4px}
+.apro-btns{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.btn-apro{border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-apro:hover{opacity:.85}
+.btn-ok{background:#16A34A;color:#fff}
+.btn-no{background:#DC2626;color:#fff}
+.apro-badge{background:#DC2626;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:5px;display:none}
+/* legacy grid kept for mobile fallback */
 .ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-.ev-btn{background:#fff;border:2px solid transparent;border-radius:var(--r);padding:14px 10px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:var(--sh-sm);transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.ev-btn{background:#fff;border:2px solid transparent;border-radius:var(--r);padding:14px 10px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:var(--sh-sm);transition:all .2s;position:relative;overflow:hidden}
 .ev-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ec,var(--blue))}
 .ev-btn:hover{transform:translateY(-3px);box-shadow:var(--sh);border-color:var(--ec,var(--blue))}
 .ev-btn:active{transform:scale(.97)}
@@ -158,6 +188,7 @@ input,select,textarea,button{font-family:var(--font)}
 .toast.ok{background:#15803D}.toast.err{background:#B91C1C}
 
 @media(max-width:480px){.nav-tabs,.nav-uname{display:none}.ev-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.ev-workspace{grid-template-columns:1fr;min-height:auto}.ev-sidebar{max-height:260px;border-right:none;border-bottom:1.5px solid var(--g100)}.ev-feed-panel{max-height:320px}}
 
 /* ══ MOBILE BOTTOM NAV ════════════════════════════════ */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#0D2347;border-top:1px solid rgba(255,255,255,.12);z-index:300;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -311,6 +342,7 @@ input,select,textarea,button{font-family:var(--font)}
     <div class="nav-tabs" id="navTabs" style="display:none">
       <button class="ntab active" data-tab="hoy">Hoy</button>
       <button class="ntab" data-tab="mis">Mis Eventos</button>
+      <button class="ntab" data-tab="apro" id="ntabApro" style="display:none">Aprobaciones<span class="apro-badge" id="aproBadge"></span></button>
       <button class="ntab" data-tab="rep">Reportes</button>
       <button class="ntab" data-tab="users" id="ntabUsers" style="display:none">Usuarios</button>
       <button class="ntab" data-tab="bio" id="ntabBio" style="display:none">Biométrico</button>
@@ -356,11 +388,13 @@ input,select,textarea,button{font-family:var(--font)}
     <div class="wrap">
       <div class="sec">
         <div class="sec-hdr"><span class="sec-title">Registrar evento</span><div class="sec-line"></div></div>
-        <div class="ev-grid" id="evGrid"></div>
-      </div>
-      <div class="sec">
-        <div class="sec-hdr"><span class="sec-title">Mis eventos hoy</span><div class="sec-line"></div></div>
-        <div class="feed" id="myFeed"><div class="feed-empty">Sin eventos registrados hoy.</div></div>
+        <div class="ev-workspace">
+          <div class="ev-sidebar" id="evSidebar"></div>
+          <div class="ev-feed-panel">
+            <div class="ev-feed-title">Mis eventos hoy</div>
+            <div class="feed" id="myFeed"><div class="feed-empty">Sin eventos registrados hoy.</div></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -410,11 +444,23 @@ input,select,textarea,button{font-family:var(--font)}
       <div id="tMis" style="display:none">
         <div class="sec">
           <div class="sec-hdr"><span class="sec-title">Registrar mi evento</span><div class="sec-line"></div></div>
-          <div class="ev-grid" id="evGridSup"></div>
+          <div class="ev-workspace">
+            <div class="ev-sidebar" id="evSidebarSup"></div>
+            <div class="ev-feed-panel">
+              <div class="ev-feed-title">Mis eventos hoy</div>
+              <div class="feed" id="myFeedSup"><div class="feed-empty">Sin eventos registrados hoy.</div></div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- TAB APROBACIONES -->
+      <div id="tApro" style="display:none">
         <div class="sec">
-          <div class="sec-hdr"><span class="sec-title">Mis eventos hoy</span><div class="sec-line"></div></div>
-          <div class="feed" id="myFeedSup"><div class="feed-empty">Sin eventos registrados hoy.</div></div>
+          <div class="sec-hdr"><span class="sec-title">Pendientes de aprobación</span><div class="sec-line"></div>
+            <button class="btn-sec" onclick="initApro()" style="font-size:12px;padding:5px 10px">↺ Actualizar</button>
+          </div>
+          <div id="aproList"><div class="feed-empty">Cargando…</div></div>
         </div>
       </div>
 
@@ -596,55 +642,89 @@ const FB_CFG = {
 };
 
 /* ══ EVENTOS ══════════════════════════════════════════ */
+// ingresa: 'asesor'|'asesor_sup'|'supervisor'|'admin'
+// aprueba: null|'supervisor'|'admin'|'sup_admin'
 const EVS=[
-  // Asistencia básica
-  {id:"entrada",      label:"Entrada",                                          icon:"🟢",color:"#16A34A",obs:false},
-  {id:"salida",       label:"Salida",                                           icon:"🔴",color:"#6B7280",obs:false},
-  {id:"falta",        label:"Falta",                                            icon:"❌",color:"#DC2626",obs:false},
-  {id:"falta_just",   label:"Falta Justificada",                                icon:"📄",color:"#0891B2",obs:true},
-  {id:"tardanza",     label:"Tardanza",                                         icon:"⏱️",color:"#EA580C",obs:true},
+  // Asistencia
+  {id:"entrada",      cat:"basica",    label:"Entrada",                                          icon:"🟢",color:"#16A34A",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"salida",       cat:"basica",    label:"Salida",                                           icon:"🔴",color:"#6B7280",ingresa:"asesor_sup", aprueba:null,        obs:false},
+  {id:"falta",        cat:"basica",    label:"Falta",                                            icon:"❌",color:"#DC2626",ingresa:"supervisor", aprueba:null,        obs:false},
+  {id:"falta_just",   cat:"basica",    label:"Falta Justificada",                                icon:"📄",color:"#0891B2",ingresa:"supervisor", aprueba:null,        obs:true},
+  {id:"tardanza",     cat:"basica",    label:"Tardanza",                                         icon:"⏱️",color:"#EA580C",ingresa:"admin",      aprueba:null,        obs:false},
   // Refrigerio
-  {id:"refrig_ini",   label:"Refrigerio Inicio",                                icon:"🍽️",color:"#D97706",obs:false},
-  {id:"refrig_fin",   label:"Refrigerio Fin",                                   icon:"☕",color:"#D97706",obs:false},
+  {id:"refrig_ini",   cat:"refrig",    label:"Refrigerio Inicio",                                icon:"🍽️",color:"#D97706",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"refrig_fin",   cat:"refrig",    label:"Refrigerio Fin",                                   icon:"☕",color:"#D97706",ingresa:"asesor",     aprueba:null,        obs:false},
+  // Horas Extra
+  {id:"ini_hhee",     cat:"hhee",      label:"Inicio HHEE",                                      icon:"🕐",color:"#7C3AED",ingresa:"asesor",     aprueba:"supervisor",obs:false},
+  {id:"fin_hhee",     cat:"hhee",      label:"Fin HHEE",                                         icon:"🕔",color:"#7C3AED",ingresa:"asesor",     aprueba:"supervisor",obs:true},
+  {id:"comp_hhee",    cat:"hhee",      label:"Compensación HHEE",                                icon:"⚡",color:"#B45309",ingresa:"asesor",     aprueba:"supervisor",obs:true},
   // Reuniones
-  {id:"reunion",      label:"Reunión",                                          icon:"🤝",color:"#0369A1",obs:true},
-  {id:"reunion_ger",  label:"Reunión Gerencia",                                 icon:"🏢",color:"#0369A1",obs:true},
-  {id:"fin_reunion",  label:"Fin de Reunión",                                   icon:"✔️",color:"#0369A1",obs:false},
+  {id:"reunion",      cat:"reunion",   label:"Reunión",                                          icon:"🤝",color:"#0369A1",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"reunion_ger",  cat:"reunion",   label:"Reunión Gerencia",                                 icon:"🏢",color:"#0369A1",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"fin_reunion",  cat:"reunion",   label:"Fin de Reunión",                                   icon:"✔️",color:"#0369A1",ingresa:"asesor",     aprueba:"supervisor",obs:true},
   // Feedback
-  {id:"feedback",     label:"Feedback",                                         icon:"💬",color:"#7C3AED",obs:true},
-  {id:"feedback_grp", label:"Feedback Grupal",                                  icon:"👥",color:"#7C3AED",obs:true},
-  {id:"fin_feedback", label:"Fin de Feedback",                                  icon:"✅",color:"#7C3AED",obs:false},
-  // Permisos y salidas
-  {id:"perm_topic",   label:"Permiso Tópico",                                   icon:"🩺",color:"#0891B2",obs:true},
-  {id:"ret_topico",   label:"Retorno de Tópico",                                icon:"↩️",color:"#0891B2",obs:false},
-  {id:"perm_retorno", label:"Permiso con Retorno",                              icon:"📋",color:"#2563EB",obs:true},
-  {id:"ret_permiso",  label:"Retorno de Permiso",                               icon:"↩️",color:"#0891B2",obs:false},
-  {id:"sal_sctr",     label:"Salida SCTR",                                      icon:"🦺",color:"#DB2777",obs:true},
-  {id:"sal_tramite",  label:"Salida por Trámite",                               icon:"📂",color:"#DB2777",obs:true},
-  {id:"sal_compra",   label:"Salida por Compra",                                icon:"🛒",color:"#DB2777",obs:true},
-  {id:"sal_medio",    label:"Salida Autorizada Medio Turno",                    icon:"⏰",color:"#DB2777",obs:true},
-  {id:"sal_hhee",     label:"Salida Autorizada antes de Fin de Turno por HHEE", icon:"📤",color:"#DB2777",obs:true},
-  {id:"sal_cumple",   label:"Salida Autorizada Cumpleaños",                     icon:"🎂",color:"#DB2777",obs:false},
-  // Descansos y beneficios
-  {id:"desc_med",     label:"Descanso Médico",                                  icon:"🏥",color:"#0284C7",obs:true},
-  {id:"desc_feriado", label:"Descanso por Feriado Laborado",                    icon:"🏖️",color:"#06B6D4",obs:false},
-  {id:"desc_domin",   label:"Descanso por Dominical Trabajado",                 icon:"📅",color:"#06B6D4",obs:false},
-  {id:"vacaciones",   label:"Vacaciones",                                       icon:"🌴",color:"#10B981",obs:false},
-  {id:"suspension",   label:"Suspensión",                                       icon:"🚫",color:"#DC2626",obs:true},
-  {id:"comp_hhee",    label:"Compensación por Horas Adicionales",               icon:"⚡",color:"#B45309",obs:true},
+  {id:"feedback",     cat:"feedback",  label:"Feedback",                                         icon:"💬",color:"#7C3AED",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"feedback_grp", cat:"feedback",  label:"Feedback Grupal",                                  icon:"👥",color:"#7C3AED",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"fin_feedback", cat:"feedback",  label:"Fin de Feedback",                                  icon:"✅",color:"#7C3AED",ingresa:"asesor",     aprueba:"supervisor",obs:true},
   // Capacitación
-  {id:"cap_horario",  label:"Capacitación dentro de Horario",                   icon:"📚",color:"#4F46E5",obs:true},
-  {id:"cap_rrhh",     label:"Capacitación por RRHH",                            icon:"🎓",color:"#4F46E5",obs:true},
-  {id:"fin_cap",      label:"Fin de Capacitación",                              icon:"🎯",color:"#4F46E5",obs:false},
-  // Incidencias
-  {id:"inc_jornada",  label:"Incidencia dentro de Jornada",                     icon:"⚠️",color:"#F59E0B",obs:true},
-  // Premiaciones
-  {id:"prem_dia",     label:"Premiación Desempeño - Día Completo",              icon:"🏆",color:"#D97706",obs:false},
-  // Horas extra
-  {id:"ini_hhee",     label:"Inicio HHEE",                                      icon:"🕐",color:"#7C3AED",obs:false},
-  {id:"fin_hhee",     label:"Fin HHEE",                                         icon:"🕔",color:"#7C3AED",obs:false},
+  {id:"cap_horario",  cat:"cap",       label:"Capacitación en Horario",                          icon:"📚",color:"#4F46E5",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"cap_rrhh",     cat:"cap",       label:"Capacitación por RRHH",                            icon:"🎓",color:"#4F46E5",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"fin_cap",      cat:"cap",       label:"Fin de Capacitación",                              icon:"🎯",color:"#4F46E5",ingresa:"asesor",     aprueba:"supervisor",obs:true},
+  // Permisos
+  {id:"perm_topic",   cat:"permisos",  label:"Permiso Tópico",                                   icon:"🩺",color:"#0891B2",ingresa:"asesor",     aprueba:"supervisor",obs:false},
+  {id:"ret_topico",   cat:"permisos",  label:"Retorno de Tópico",                                icon:"↩️",color:"#0891B2",ingresa:"asesor",     aprueba:"supervisor",obs:false},
+  {id:"perm_retorno", cat:"permisos",  label:"Permiso con Retorno",                              icon:"📋",color:"#2563EB",ingresa:"asesor",     aprueba:"supervisor",obs:false},
+  {id:"ret_permiso",  cat:"permisos",  label:"Retorno de Permiso",                               icon:"↩️",color:"#0891B2",ingresa:"asesor",     aprueba:"supervisor",obs:true},
+  // Salidas
+  {id:"sal_tramite",  cat:"salidas",   label:"Salida por Trámite",                               icon:"📂",color:"#DB2777",ingresa:"asesor",     aprueba:"admin",     obs:true},
+  {id:"sal_compra",   cat:"salidas",   label:"Salida por Compra",                                icon:"🛒",color:"#DB2777",ingresa:"asesor",     aprueba:"admin",     obs:true},
+  {id:"sal_medio",    cat:"salidas",   label:"Salida Medio Turno",                               icon:"⏰",color:"#DB2777",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"sal_hhee",     cat:"salidas",   label:"Salida HHEE",                                      icon:"📤",color:"#DB2777",ingresa:"asesor",     aprueba:"sup_admin", obs:true},
+  {id:"sal_cumple",   cat:"salidas",   label:"Salida Cumpleaños",                                icon:"🎂",color:"#DB2777",ingresa:"asesor",     aprueba:null,        obs:false},
+  {id:"sal_sctr",     cat:"salidas",   label:"Salida SCTR",                                      icon:"🦺",color:"#DB2777",ingresa:"admin",      aprueba:null,        obs:true},
+  // Descansos
+  {id:"desc_feriado", cat:"descansos", label:"Feriado Laborado",                                 icon:"🏖️",color:"#06B6D4",ingresa:"supervisor", aprueba:null,        obs:true},
+  {id:"desc_domin",   cat:"descansos", label:"Dominical Trabajado",                              icon:"📅",color:"#06B6D4",ingresa:"supervisor", aprueba:null,        obs:true},
+  {id:"desc_med",     cat:"descansos", label:"Descanso Médico",                                  icon:"🏥",color:"#0284C7",ingresa:"admin",      aprueba:null,        obs:false},
+  {id:"vacaciones",   cat:"descansos", label:"Vacaciones",                                       icon:"🌴",color:"#10B981",ingresa:"admin",      aprueba:null,        obs:false},
+  {id:"suspension",   cat:"descansos", label:"Suspensión",                                       icon:"🚫",color:"#DC2626",ingresa:"admin",      aprueba:null,        obs:true},
+  // Otros
+  {id:"inc_jornada",  cat:"otros",     label:"Incidencia en Jornada",                            icon:"⚠️",color:"#F59E0B",ingresa:"asesor",     aprueba:null,        obs:true},
+  {id:"prem_dia",     cat:"otros",     label:"Premiación Día Completo",                          icon:"🏆",color:"#D97706",ingresa:"admin",      aprueba:null,        obs:true},
 ];
 const EVM=Object.fromEntries(EVS.map(e=>[e.id,e]));
+const GRUPOS=[
+  {key:'basica',   label:'Asistencia'},
+  {key:'refrig',   label:'Refrigerio'},
+  {key:'hhee',     label:'Horas Extra'},
+  {key:'reunion',  label:'Reunión'},
+  {key:'feedback', label:'Feedback'},
+  {key:'cap',      label:'Capacitación'},
+  {key:'permisos', label:'Permisos'},
+  {key:'salidas',  label:'Salidas'},
+  {key:'descansos',label:'Descansos'},
+  {key:'otros',    label:'Otros'},
+];
+function evCanSee(ev,rol){
+  if(rol==='admin')return true;
+  if(rol==='supervisor')return['asesor','asesor_sup','supervisor'].includes(ev.ingresa);
+  return['asesor','asesor_sup'].includes(ev.ingresa);
+}
+function renderEvSidebar(containerId,rol,clickCb){
+  let html='';
+  GRUPOS.forEach(g=>{
+    const evs=EVS.filter(e=>e.cat===g.key&&evCanSee(e,rol));
+    if(!evs.length)return;
+    html+=`<div class="ev-cat-hdr">${g.label}</div>`;
+    evs.forEach(ev=>{
+      const aTag=ev.aprueba?`<span class="apro-tag">${ev.aprueba==='admin'?'Admin':ev.aprueba==='sup_admin'?'Sup/Adm':'Sup'}</span>`:'';
+      html+=`<button class="ev-list-btn" data-ev="${ev.id}"><span class="ev-ico-sm" style="background:${ev.color}18">${ev.icon}</span><span class="ev-list-lbl">${ev.label}</span>${aTag}</button>`;
+    });
+  });
+  const c=$(containerId);
+  c.innerHTML=html;
+  c.querySelectorAll('.ev-list-btn').forEach(b=>b.addEventListener('click',()=>clickCb(b.dataset.ev)));
+}
 
 /* ══ FIREBASE ════════════════════════════════════════ */
 firebase.initializeApp(FB_CFG);
@@ -717,6 +797,7 @@ function initApp(){
     $('navTabs').style.display='flex';
     $('vAsesor').style.display='none';$('vSup').style.display='block';
     initFechaHoy();
+    $('ntabApro').style.display='block'; // supervisors and admins see approvals
     if(CU.rol==='admin'){
       $('ntabUsers').style.display='block';$('ntabBio').style.display='block';
       $('supSelWrap').style.display='block';$('rSupWrap').style.display='block';
@@ -727,32 +808,38 @@ function initApp(){
     showTab('hoy');
     setupRep();
     if(CU.rol==='admin')setupUsers();
+    checkAproBadge();
   }
 }
 
 /* ══ TAB NAV ═════════════════════════════════════════ */
 function showTab(t){
-  const map={hoy:'tHoy',mis:'tMis',rep:'tRep',users:'tUsers',bio:'tBio'};
-  ['tHoy','tMis','tRep','tUsers','tBio'].forEach(id=>$(id).style.display='none');
+  const map={hoy:'tHoy',mis:'tMis',apro:'tApro',rep:'tRep',users:'tUsers',bio:'tBio'};
+  ['tHoy','tMis','tApro','tRep','tUsers','tBio'].forEach(id=>$(id).style.display='none');
   $(map[t]||'tHoy').style.display='block';
   document.querySelectorAll('.ntab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   if(t==='mis')initMisSup();
+  if(t==='apro')initApro();
   if(t==='bio')initBio();
 }
 function setupTabNav(){document.querySelectorAll('.ntab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)))}
 
 /* ══ ASESOR VIEW ═════════════════════════════════════ */
 let pendEv=null;
+function feedItemHtml(r){
+  const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};
+  const est=r.estado==='pendiente'?'<span class="est-badge est-pend">⏳ Pendiente</span>':r.estado==='aprobado'?'<span class="est-badge est-apro">✓ Aprobado</span>':r.estado==='rechazado'?'<span class="est-badge est-rech">✕ Rechazado</span>':'';
+  return`<div class="feed-item"><div class="fd" style="background:${ev.color}"></div><div class="fe" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${r.evento_label}${est}</div>${r.observacion?`<span class="fobs" title="${r.observacion}">"${r.observacion}"</span>`:''}<div class="fh">${r.hora||'--:--'}</div></div>`;
+}
 function initAsesor(){
-  $('evGrid').innerHTML=EVS.map(ev=>`<button class="ev-btn" data-ev="${ev.id}" style="--ec:${ev.color}"><div class="ev-icon" style="background:${ev.color}20">${ev.icon}</div><div class="ev-label">${ev.label.replace('\n','<br>')}</div></button>`).join('');
-  document.querySelectorAll('.ev-btn').forEach(b=>b.addEventListener('click',()=>onEv(b.dataset.ev)));
+  renderEvSidebar('evSidebar','asesor',id=>onEv(id));
   if(feedUnsub)feedUnsub();
   feedUnsub=db.collection('marcaciones').where('dni','==',CU.dni).where('fecha','==',hoy())
     .onSnapshot(snap=>{
       const el=$('myFeed');
       if(snap.empty){el.innerHTML='<div class="feed-empty">Sin eventos registrados hoy.</div>';return}
-      const docs=[...snap.docs].map(d=>d.data()).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
-      el.innerHTML=docs.map(r=>{const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};return`<div class="feed-item"><div class="fd" style="background:${ev.color}"></div><div class="fe" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${r.evento_label}</div>${r.observacion?`<span class="fobs" title="${r.observacion}">"${r.observacion}"</span>`:''}<div class="fh">${r.hora||'--:--'}</div></div>`}).join('');
+      const docs=[...snap.docs].map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+      el.innerHTML=docs.map(feedItemHtml).join('');
     },e=>console.warn(e));
 }
 function onEv(id,ctx){
@@ -762,9 +849,11 @@ function onEv(id,ctx){
 }
 $('mObsCan').addEventListener('click',()=>{$('mObs').style.display='none';pendEv=null});
 $('mObsOk').addEventListener('click',()=>{if(!pendEv)return;const obs=$('mObsTa').value.trim();$('mObs').style.display='none';guardar(pendEv,obs);pendEv=null});
-function guardar(ev,obs){
+function guardar(ev,obs,targetDni,targetNombre,targetRol,targetSupDni){
   const n=new Date(),hora=`${p2(n.getHours())}:${p2(n.getMinutes())}`;
-  db.collection('marcaciones').add({dni:CU.dni,nombre:CU.nombre,rol:CU.rol,supervisor_dni:CU.supervisor_dni,evento_id:ev.id,evento_label:ev.label.replace('\n',' '),observacion:obs,fecha:hoy(),hora,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+  const dni=targetDni||CU.dni, nombre=targetNombre||CU.nombre, rol=targetRol||CU.rol, supDni=targetSupDni||CU.supervisor_dni;
+  const estado=ev.aprueba?'pendiente':'activo';
+  db.collection('marcaciones').add({dni,nombre,rol,supervisor_dni:supDni,evento_id:ev.id,evento_label:ev.label.replace('\n',' '),observacion:obs,aprueba:ev.aprueba||null,estado,fecha:hoy(),hora,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
     .then(()=>toast(`${ev.label.replace('\n',' ')} registrada`,'ok'))
     .catch(e=>{console.error(e);toast('Error al guardar','err')});
 }
@@ -927,16 +1016,76 @@ async function loadSupsSelects(){
 /* ══ MIS EVENTOS (supervisor/admin) ═════════════════ */
 let feedSupUnsub=null;
 function initMisSup(){
-  $('evGridSup').innerHTML=EVS.map(ev=>`<button class="ev-btn" data-ev="${ev.id}" style="--ec:${ev.color}"><div class="ev-icon" style="background:${ev.color}20">${ev.icon}</div><div class="ev-label">${ev.label.replace('\n','<br>')}</div></button>`).join('');
-  document.querySelectorAll('#evGridSup .ev-btn').forEach(b=>b.addEventListener('click',()=>onEv(b.dataset.ev,'sup')));
+  renderEvSidebar('evSidebarSup',CU.rol,id=>onEv(id,'sup'));
   if(feedSupUnsub)feedSupUnsub();
   feedSupUnsub=db.collection('marcaciones').where('dni','==',CU.dni).where('fecha','==',hoy())
     .onSnapshot(snap=>{
       const el=$('myFeedSup');
       if(snap.empty){el.innerHTML='<div class="feed-empty">Sin eventos registrados hoy.</div>';return}
-      const docs=[...snap.docs].map(d=>d.data()).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
-      el.innerHTML=docs.map(r=>{const ev=EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿'};return`<div class="feed-item"><div class="fd" style="background:${ev.color}"></div><div class="fe" style="background:${ev.color}18;color:${ev.color}">${ev.icon} ${r.evento_label}</div>${r.observacion?`<span class="fobs" title="${r.observacion}">"${r.observacion}"</span>`:''}<div class="fh">${r.hora||'--:--'}</div></div>`}).join('');
+      const docs=[...snap.docs].map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+      el.innerHTML=docs.map(feedItemHtml).join('');
     },e=>console.warn(e));
+}
+
+/* ══ APROBACIONES ════════════════════════════════════ */
+async function checkAproBadge(){
+  try{
+    let q=db.collection('marcaciones').where('estado','==','pendiente');
+    if(CU.rol==='supervisor')q=q.where('supervisor_dni','==',CU.dni);
+    const snap=await q.get();
+    const n=snap.docs.filter(d=>{
+      const a=d.data().aprueba;
+      if(CU.rol==='admin')return a==='admin'||a==='sup_admin';
+      return a==='supervisor'||a==='sup_admin';
+    }).length;
+    const badge=$('aproBadge');
+    if(n>0){badge.textContent=n;badge.style.display='inline'}
+    else{badge.style.display='none'}
+  }catch(e){console.warn('checkAproBadge',e)}
+}
+async function initApro(){
+  const el=$('aproList');
+  el.innerHTML='<div class="feed-empty">Cargando…</div>';
+  try{
+    let q=db.collection('marcaciones').where('estado','==','pendiente');
+    if(CU.rol==='supervisor')q=q.where('supervisor_dni','==',CU.dni);
+    const snap=await q.get();
+    const items=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>{
+      if(CU.rol==='admin')return r.aprueba==='admin'||r.aprueba==='sup_admin';
+      return r.aprueba==='supervisor'||r.aprueba==='sup_admin';
+    }).sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||'')||(a.hora||'').localeCompare(b.hora||''));
+    if(!items.length){el.innerHTML='<div class="feed-empty" style="padding:32px;text-align:center">✅ Sin pendientes de aprobación</div>';return}
+    const ev=r=>EVM[r.evento_id]||{color:'#94A3B8',icon:'⦿',label:r.evento_label};
+    el.innerHTML=items.map(r=>{
+      const e=ev(r);
+      return`<div class="apro-item">
+        <span style="font-size:28px;flex-shrink:0">${e.icon}</span>
+        <div class="apro-item-body">
+          <div class="apro-item-nom">${r.nombre||r.dni}</div>
+          <div class="apro-item-ev"><span class="est-badge" style="background:${e.color}18;color:${e.color}">${r.evento_label}</span></div>
+          ${r.observacion?`<div class="apro-item-obs">"${r.observacion}"</div>`:''}
+          <div class="apro-item-meta">📅 ${r.fecha} &nbsp;⏰ ${r.hora||'—'}</div>
+        </div>
+        <div class="apro-btns">
+          <button class="btn-apro btn-ok" onclick="resolverApro('${r.id}','aprobado')">✓ Aprobar</button>
+          <button class="btn-apro btn-no" onclick="resolverApro('${r.id}','rechazado')">✕ Rechazar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.error(e);
+    if(e.code==='failed-precondition')el.innerHTML='<div class="feed-empty">⚠️ Se requiere un índice en Firestore. Revisa la consola del navegador y haz clic en el enlace para crearlo.</div>';
+    else el.innerHTML='<div class="feed-empty">Error al cargar aprobaciones</div>';
+  }
+}
+async function resolverApro(docId,nuevoEstado){
+  try{
+    const n=new Date(),hora=`${p2(n.getHours())}:${p2(n.getMinutes())}`;
+    await db.collection('marcaciones').doc(docId).update({estado:nuevoEstado,aprobado_por:CU.dni,aprobado_nombre:CU.nombre,aprobado_hora:hora});
+    toast(nuevoEstado==='aprobado'?'Aprobado ✓':'Rechazado ✕',nuevoEstado==='aprobado'?'ok':'err');
+    initApro();
+    checkAproBadge();
+  }catch(e){console.error(e);toast('Error al procesar','err')}
 }
 
 /* ══ REPORTES ════════════════════════════════════════ */
